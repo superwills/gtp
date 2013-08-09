@@ -23,19 +23,21 @@ Icosahedron* Icosahedron::createMesh( MeshType iMeshType, VertexType iVertexType
   //where φ = (1 + √5) / 2 
 
   const real t = ( 1 + sqrt( 5.0 ) ) / 2.0 ;
+  // So each side has a length of sqrt( t*t + 1.0 )
+  real rScale = r / sqrt( t*t + 1.0 ) ; // correct the radius
   Vector* v = &A ;
   
   for( int i = 0 ; i < 4; i++ )
     //v[ i ] = Vector( 0, -(i&2), -(i&1)*t ) ; 
-    v[ i ] = r*Vector( 0, i&2?-1:1, i&1?-t:t ) ; 
+    v[ i ] = rScale*Vector( 0, i&2?-1:1, i&1?-t:t ) ; 
 
   for( int i = 4 ; i < 8; i++ )
     //v[ i ] = Vector( -(i&2), -(i&1)*t, 0 ) ; 
-    v[ i ] = r*Vector( i&2?-1:1, i&1?-t:t, 0 ) ; 
+    v[ i ] = rScale*Vector( i&2?-1:1, i&1?-t:t, 0 ) ; 
 
   for( int i = 8 ; i < 12; i++ )
     //v[ i ] = Vector( -(i&1)*t, 0, -(i&2) ) ; 
-    v[ i ] = r*Vector( i&1?-t:t, 0, i&2?-1:1 ) ; 
+    v[ i ] = rScale*Vector( i&1?-t:t, 0, i&2?-1:1 ) ; 
 
 
   mesh->addTri( v[0], v[2], v[8] ) ;
