@@ -48,6 +48,7 @@ public:
     DESTROY( callback ) ; //!! delete this now.  there is no
     // other chance to, often the Callback is created using
     // NEW syntax like Job*job=new Job( "name", new Callback0().. )
+    free( name ) ; // you strudup'd this in any possible ctors
   }
   char *name ;
 
