@@ -13,7 +13,7 @@ function<void ( LightVector& data )> bssrdfFunctions[] = {
   []( LightVector& data ) {
     data.color.y = 0 ; // zero green for whatever reason this is just a sample function
     data.direction.rotateZ( 0.2 ) ;
-    data.mi.point += 0.01 * (data.mi.normal × Vector::random()) ;
+    data.mi.point += 0.01 * (data.mi.normal << Vector::random()) ;
   }
 } ;
 

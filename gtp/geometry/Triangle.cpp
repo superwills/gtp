@@ -19,9 +19,9 @@ Plane(pa,pb,pc),a(pa),b(pb),c(pc),iA(ia),iB(ib),iC(ic),meshOwner( iMeshOwner )
 void Triangle::precomputeBary()
 {
   v0 = b-a, v1=c-a ;
-  d00 = v0 • v0;
-  d01 = v0 • v1; 
-  d11 = v1 • v1; 
+  d00 = v0 % v0;
+  d01 = v0 % v1; 
+  d11 = v1 % v1; 
   invDenomBary = 1.0/(d00 * d11 - d01 * d01);
 }
 
@@ -99,9 +99,9 @@ Vector Triangle::getBarycentricCoordinatesAt( const Vector & P ) const
  
   // shirley
   #if 0 
-  real areaABC = normal • ( (b - a) × (c - a) ) ;
-  real areaPBC = normal • ( (b - P) × (c - P) ) ;
-  real areaPCA = normal • ( (c - P) × (a - P) ) ;
+  real areaABC = normal % ( (b - a) << (c - a) ) ;
+  real areaPBC = normal % ( (b - P) << (c - P) ) ;
+  real areaPCA = normal % ( (c - P) << (a - P) ) ;
 
   bary.x = areaPBC / areaABC ; // a
   bary.y = areaPCA / areaABC ; // b
@@ -110,8 +110,8 @@ Vector Triangle::getBarycentricCoordinatesAt( const Vector & P ) const
   // rtcd ericsson
   // reduced runtime cost for static meshes
   Vector v2=P-a ;
-  float d20 = v2 • v0;
-  float d21 = v2 • v1;
+  float d20 = v2 % v0;
+  float d21 = v2 % v1;
   bary.y = (d11 * d20 - d01 * d21) * invDenomBary ;
   bary.z = (d00 * d21 - d01 * d20) * invDenomBary ;
   bary.x = 1.0 - bary.y - bary.z;
@@ -158,7 +158,7 @@ real Triangle::area() const
   Vector ab = b - a ;
   Vector ac = c - a ;
 
-  real area = ( ab × ac ).len() / 2.0 ;
+  real area = ( ab << ac ).len() / 2.0 ;
   return area ;
 }
 
@@ -405,16 +405,16 @@ bool Triangle::isAdjacent( Triangle& other, Adjacency* adj )
   {
     // does not want adjacency information
     return (
-             (a ≈ other.a) &&  // a is shared
-             ( (b ≈ other.b) || (c ≈ other.c) || (b ≈ other.c) || (c ≈ other.b) )
+             (a , other.a) &&  // a is shared
+             ( (b , other.b) || (c , other.c) || (b , other.c) || (c , other.b) )
            ) ||
            (
-             (b ≈ other.b) &&  // b is shared, a NOT shared due to above (one less test below)
-             ( (a ≈ other.c) || (c ≈ other.a) || (c ≈ other.c) )
+             (b , other.b) &&  // b is shared, a NOT shared due to above (one less test below)
+             ( (a , other.c) || (c , other.a) || (c , other.c) )
            ) ||
            (
-             (c ≈ other.c) &&  // c is shared, a,b NOT shared due to above (two less tests below)
-             ( (a ≈ other.b) || (b ≈ other.a) )
+             (c , other.c) &&  // c is shared, a,b NOT shared due to above (two less tests below)
+             ( (a , other.b) || (b , other.a) )
            ) ;
   }
   else
@@ -422,14 +422,14 @@ bool Triangle::isAdjacent( Triangle& other, Adjacency* adj )
     adj->tri1 = this ;
     adj->tri2 = &other ;
 
-    if( a ≈ other.a )
+    if( a , other.a )
     {
       // a is shared
       adj->sharedVertex1 = a ;
       adj->sharedIndex1onT1 = iA ;       // these will be the same if used index buffers
       adj->sharedIndex1onT2 = other.iA ; // these will be the same if used index buffers
 
-      if( b ≈ other.b )
+      if( b , other.b )
       {
         adj->sharedVertex2 = b ;
         adj->sharedIndex2onT1 = iB ;
@@ -438,7 +438,7 @@ bool Triangle::isAdjacent( Triangle& other, Adjacency* adj )
         adj->nonSharedVertexOnT1 = c ;
         adj->nonSharedVertexOnT2 = other.c ;
       }
-      else if( b ≈ other.c )
+      else if( b , other.c )
       {
         adj->sharedVertex2 = b ;
         adj->sharedIndex2onT1 = iB ;
@@ -446,7 +446,7 @@ bool Triangle::isAdjacent( Triangle& other, Adjacency* adj )
         adj->nonSharedVertexOnT1 = c ;
         adj->nonSharedVertexOnT2 = other.b ;
       }
-      else if( c ≈ other.c )
+      else if( c , other.c )
       {
         adj->sharedVertex2 = c ;
         adj->sharedIndex2onT1 = iC ;
@@ -454,7 +454,7 @@ bool Triangle::isAdjacent( Triangle& other, Adjacency* adj )
         adj->nonSharedVertexOnT1 = b ;
         adj->nonSharedVertexOnT2 = other.b ;
       }
-      else if( c ≈ other.b )
+      else if( c , other.b )
       {
         adj->sharedVertex2 = c ;
         adj->sharedIndex2onT1 = iC ;
@@ -465,14 +465,14 @@ bool Triangle::isAdjacent( Triangle& other, Adjacency* adj )
       else  // only one is shared
         return false ;
     }
-    else if( b ≈ other.b )
+    else if( b , other.b )
     {
       // b is shared, a NOT shared due to above (one less test below)
       adj->sharedVertex1 = b ;
       adj->sharedIndex1onT1 = iB ;       // these will be the same if used index buffers
       adj->sharedIndex1onT2 = other.iB ; // these will be the same if used index buffers
 
-      if(a ≈ other.c)
+      if(a , other.c)
       {
         adj->sharedVertex2 = a ;
         adj->sharedIndex2onT1 = iA ;
@@ -480,7 +480,7 @@ bool Triangle::isAdjacent( Triangle& other, Adjacency* adj )
         adj->nonSharedVertexOnT1 = c ;
         adj->nonSharedVertexOnT2 = other.b ;
       }
-      else if(c ≈ other.a)
+      else if(c , other.a)
       {
         adj->sharedVertex2 = c ;
         adj->sharedIndex2onT1 = iC ;
@@ -488,7 +488,7 @@ bool Triangle::isAdjacent( Triangle& other, Adjacency* adj )
         adj->nonSharedVertexOnT1 = a ;
         adj->nonSharedVertexOnT2 = other.c ;
       }
-      else if(c ≈ other.c)
+      else if(c , other.c)
       {
         adj->sharedVertex2 = c ;
         adj->sharedIndex2onT1 = iC ;
@@ -499,14 +499,14 @@ bool Triangle::isAdjacent( Triangle& other, Adjacency* adj )
       else
         return false ;
     }
-    else if( c ≈ other.c )
+    else if( c , other.c )
     {
       // c is shared, a,b NOT shared due to above (two less tests below)
       adj->sharedVertex1 = c ;
       adj->sharedIndex1onT1 = iC ;       // these will be the same if used index buffers
       adj->sharedIndex1onT2 = other.iC ; // these will be the same if used index buffers
 
-      if(a ≈ other.b)
+      if(a , other.b)
       {
         adj->sharedVertex2 = a ;
         adj->sharedIndex2onT1 = iA ;
@@ -514,7 +514,7 @@ bool Triangle::isAdjacent( Triangle& other, Adjacency* adj )
         adj->nonSharedVertexOnT1 = b ;
         adj->nonSharedVertexOnT2 = other.a ;
       }
-      else if(b ≈ other.a)
+      else if(b , other.a)
       {
         adj->sharedVertex2 = b ;
         adj->sharedIndex2onT1 = iB ;
@@ -605,7 +605,7 @@ real PhantomTriangle::area() const
   Vector ab = b - a ;
   Vector ac = c - a ;
 
-  real area = ( ab × ac ).len() / 2.0 ;
+  real area = ( ab << ac ).len() / 2.0 ;
   return area ;
 }
 

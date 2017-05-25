@@ -412,7 +412,7 @@ public:
   
 private:
   // number 
-  int raysPerPixel, √raysPerPixel ;
+  int raysPerPixel, sqrtRaysPerPixel ;
   bool stratified ;
   TraceType traceType ;
   int raysDistributed ;

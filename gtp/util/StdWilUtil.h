@@ -40,14 +40,12 @@ namespace swu
   #define MMCMD(x) x##d
   #endif
   
-  #define √ sqrt
+  const static real sqrt2 = sqrt(2.0) ;
+  const static real sqrt3 = sqrt(3.0) ;
+  const static real INV_sqrt2 = 1.0 / sqrt(2.0) ;
+  const static real INV_sqrt3 = 1.0 / sqrt(3.0) ;
 
-  const static real √2 = sqrt(2.0) ;
-  const static real √3 = sqrt(3.0) ;
-  const static real INV_√2 = 1.0 / sqrt(2.0) ;
-  const static real INV_√3 = 1.0 / sqrt(3.0) ;
-
-  const static real √3÷2 = sqrt(3.0)/2.0;  // ALT+251=√ 3 ALT+246=÷ 2
+  const static real sqrt3over2 = sqrt(3.0)/2.0;  
 
   #define CUBE(x) ( (x)*(x)*(x) )
   #define SQUARE(x) ( (x)*(x) )
@@ -142,7 +140,6 @@ namespace swu
   /// we have to use strrchr to make sure its safe
   #define cstrnulllastnl(str) {char* nl=strrchr(str,'\n'); if(nl){*nl=0;}}
   #define cstrnullnextsp(str) {char* nl=strchr(str,' '); if(nl){*nl=0;}}
-  #define cfilesize(sizeVar,file) {fseek( file, 0, SEEK_END ) ; sizeVar = ftell( file ) ; rewind( file ) ;}
   //#define cfilereadbinary(dstPtr,filename) { FILE*____file=fopen(filename,"rb");if(____file){fseek(____file,0,SEEK_END);int ____fileSIZE=ftell(____file); dstPtr=malloc(____fileSize);rewind(file);fread(dstPtr,____fileSize,1,____file);fclose(____file);}else{printf("Can't open '%s'\n",filename);} }
 
   /// returns TRUE of a character x
@@ -156,7 +153,7 @@ namespace swu
 
   #define WARN_ONCE(s) {static bool _wwarned = false ; if( !_wwarned ){ warning( s ) ; _wwarned = true ; }}
 
-  //#define T_T template<typename T>
+  int cfilesize(FILE* f);
 
   /// Gets you a random real between
   /// 'a' and 'b'
@@ -180,8 +177,6 @@ namespace swu
   extern real *facs ;
   void prepFactorials() ;
   //real factorial( int n ) ;
-
-  int round( double val ) ;
 
   int sprintNow( char* buf ) ;
 

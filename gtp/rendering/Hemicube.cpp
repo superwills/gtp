@@ -191,7 +191,7 @@ void Hemicube::renderToSurfaces( Scene *scene, const Vector& eye, const Vector& 
   // of the surface this hemicube is built on top of.
   /////Vector up = forward.getPerpendicular() ;  // what's UP to the hemicube.  `out` and
   // `up` are always orthogonal
-  Vector right = forward × up ; // what's "right" to the hemicube
+  Vector right = forward << up ; // what's "right" to the hemicube
 
   // Before we begin get vectors in the direction of
   // TOP, RIGHT, BOTTOM, LEFT first.
@@ -248,7 +248,7 @@ void Hemicube::formFactors( Scene *scene, const Triangle& tri, Eigen::MatrixXf* 
   // up/right doesn't matter, it just has to be
   // perpendicular to forward, so
   // up = forward.getPerpendicular() and
-  // right = forward × up
+  // right = forward << up
   Vector forward = tri.normal ;  // tri.normal is actually the FWD vector
 
   if( forward.len2() == 0 )

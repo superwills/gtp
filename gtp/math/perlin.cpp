@@ -556,7 +556,7 @@ Model* PerlinGenerator::heightmapNonindexed( int udivs, int vdivs, real uSize, r
           base2.y = mountainHeight( ps[i].x + base2.x,    ps[i].z + base2.z ) ;
           
           // base1 always "lags" base2
-          ns[i] += base1 × base2 ;
+          ns[i] += base1 << base2 ;
           window->addDebugLine( ps[i] + base1, Vector(1,0,0), ps[i] + base2, Vector(.5,0,0) ) ;
         }
       }

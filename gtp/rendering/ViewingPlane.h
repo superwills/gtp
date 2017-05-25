@@ -16,7 +16,7 @@ struct ViewingPlane
   int rows, cols ;
 
   // rays per pixel
-  int rpp, √rpp ;
+  int rpp, sqrtrpp ;
 
   // distances to the near and far planes
   real nearPlane, // how far back the eye is from the near plane
@@ -31,7 +31,7 @@ struct ViewingPlane
 
     rows = iRows ;  cols = iCols ;
     rpp = iRpp ;
-    √rpp = (int)sqrt( (float)rpp ) ;
+    sqrtrpp = (int)sqrt( (float)rpp ) ;
 
     nearPlane = 1 ; // the distance of this doesn't really matter, nothing is clipped
     farPlane = 1000 ;
@@ -44,10 +44,10 @@ struct ViewingPlane
 
     // That means the viewing plane's vertices are
     // at z=-nearPlane, THESE ARE z=0 INITIALLY
-    a = Vector( √2, √2, nearPlane ) ;
-    b = Vector(-√2, √2, nearPlane ) ;
-    c = Vector(-√2,-√2, nearPlane ) ;
-    d = Vector( √2,-√2, nearPlane ) ;
+    a = Vector( sqrt2, sqrt2, nearPlane ) ;
+    b = Vector(-sqrt2, sqrt2, nearPlane ) ;
+    c = Vector(-sqrt2,-sqrt2, nearPlane ) ;
+    d = Vector( sqrt2,-sqrt2, nearPlane ) ;
   }
 
 public:

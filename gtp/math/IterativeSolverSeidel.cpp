@@ -94,7 +94,7 @@ void IterativeSolverSeidel::iterate() // override
   // (you will systematically iterate through)
 
 #if ITERATIVE_SOLVERS_SHOW_PROGRESS_CONSOLE
-  printf( "Seidel iteration %d, norm2=%f\r", //typically does not reach more than 5-10 iterations
+  printf( "Seidel iteration %lld, norm2=%f\r", //typically does not reach more than 5-10 iterations
     iteration, getLastNorm() ) ;
 #endif
 }

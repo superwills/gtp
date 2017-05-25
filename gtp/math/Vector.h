@@ -322,10 +322,6 @@ union Vector
     return IsNear( Dot( b ), 0.0, EPS_MIN ) ;
   }
 
-  inline real •(  const Vector & b ) const {
-    return x*b.x + y*b.y + z*b.z ;
-  }
-
   inline Vector componentWiseMultiply( const Vector& b ) const{
     return Vector( x*b.x, y*b.y, z*b.z ) ;
   }
@@ -774,33 +770,16 @@ Vector operator-( const Vector & a, const real & b ) ;
 // unary minus
 Vector operator-( const Vector & a ) ;
 
-// utilize uncommon operators for dot product and near equality
-// this gives dot the same precedence as multiply
-#define • %
-real operator •( const Vector & a, const Vector & b ) ;
+real operator%( const Vector & a, const Vector & b ) ;
 
-//#define √ sqrt
-//#define ° *(180.0/PI) // unintuitive
-//≤
-//≥
-//x.²() ;
-//x.ⁿ( 5 ) ;
-#define ≈ ,
-bool operator ≈( const Vector & a, const Vector & b ) ;
+bool operator,( const Vector & a, const Vector & b ) ;
 
 // multiplication by a vector is going to be the 
 // same thing it is in shaders: component wise
 // multiply
 Vector operator*( const Vector & a, const Vector & b ) ;
 
-// Cross product
-// × is ALT+0215  x
-// << is not used on vector/vector
-#define × <<
-Vector operator ×( const Vector & a, const Vector & b ) ;
-
-// you could also define v ×= m (v = m*v), but this
-// is going too far for matrix/vector since order is ambiguous.
+Vector operator<<( const Vector & a, const Vector & b ) ;
 
 Vector operator*( const Vector & a, const real b ) ;
 
@@ -810,9 +789,8 @@ Vector operator*( const real b, const Vector & a ) ;
 
 
 
-/// Post multiply matrix by vector
+/// Pre multiply matrix by vector
 Vector operator*( const Vector& v, const Matrix & a ) ;
-////Vector operator ×( const Matrix & a, const Vector& v ) ; // alias above
 
 // Transforms a 3-vector while leaving off the translation component
 Vector transformNormal( const Vector& n, const Matrix & a ) ;

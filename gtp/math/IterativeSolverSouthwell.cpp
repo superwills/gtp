@@ -83,7 +83,7 @@ void IterativeSolverSouthwell::iterate() // override  "'override' cannot be used
 
 #if ITERATIVE_SOLVERS_SHOW_PROGRESS_CONSOLE
   if( ! (iteration % 10) )
-    printf( "Southwell iteration %d, norm2=%f\r",
+    printf( "Southwell iteration %lld, norm2=%f\r",
       iteration, getLastNorm() ) ;
 #endif
 }

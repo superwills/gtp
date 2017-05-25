@@ -49,8 +49,8 @@ struct Camera
     forward = (iLook - eye).normalize() ;
 
     // now you have to re-find up and right
-    right = forward × up ;
-    up = right × forward ;
+    right = forward << up ;
+    up = right << forward ;
 
     renormalizeVectors() ;
   }
@@ -87,8 +87,8 @@ struct Camera
     Matrix rotMat = Matrix::Rotation( up, increment ) ;
 
     forward = forward * rotMat ;
-    //right = rotMat × right ; // you could just recompute this
-    right = forward × up ;
+    //right = rotMat << right ; // you could just recompute this
+    right = forward << up ;
 
     // renormalize these vectors
     // to make sure they stay unit vectors
@@ -102,7 +102,7 @@ struct Camera
     Matrix rotMat = Matrix::Rotation( right, increment ) ;
 
     forward = forward * rotMat ;
-    up = right × forward ;
+    up = right << forward ;
     renormalizeVectors() ;
   }
 
@@ -110,7 +110,7 @@ struct Camera
   {
     // rotate up and recalc right
     up = up * Matrix::Rotation( forward, rads ) ;
-    right = forward × up ;
+    right = forward << up ;
     renormalizeVectors() ;
   }
 
@@ -132,7 +132,7 @@ struct Camera
 
     // The right vector should be
     // maintained as well
-    right = forward × up ;
+    right = forward << up ;
 
     renormalizeVectors() ;
     

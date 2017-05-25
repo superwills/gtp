@@ -242,7 +242,7 @@ void Raycaster::ambientOcclusion( AllVertex& vertex )
 
     // sample must be +hemisphere
     // Want samples ONLY on the upper hemisphere (with the normal at the center)
-    real dot = vertex.norm • dir ; // angle acute, sample in upper hemisphere (centered around normal)
+    real dot = vertex.norm % dir ; // angle acute, sample in upper hemisphere (centered around normal)
     if( dot < 0 )  continue ; // skip this sample if angle with normal is obtuse
     //dotSum += dot ;
 
@@ -297,7 +297,7 @@ void Raycaster::vectorOccluders( AllVertex& vertex )
 
     // sample must be +hemisphere
     // Want samples ONLY on the upper hemisphere (with the normal at the center)
-    real dot = vertex.norm • dir ; // angle acute, sample in upper hemisphere (centered around normal)
+    real dot = vertex.norm % dir ; // angle acute, sample in upper hemisphere (centered around normal)
     if( dot < 0 )  continue ; // skip this sample if angle with normal is obtuse
 
     Ray ray( vertex.pos + EPS_MIN * vertex.norm, dir, 1000, window->scene->mediaEta, 1, 0 ) ;
@@ -317,7 +317,7 @@ void Raycaster::vectorOccluders( AllVertex& vertex )
       // if the normal is NOT OBTUSE WITH the casting ray,
       // you need to turn it around because it's physically impossible to hit the
       // "inside" of a surface _first_ with a ray casted towards that surface.
-      if( dir • mi.normal > 0 )  mi.normal = - mi.normal ;
+      if( dir % mi.normal > 0 )  mi.normal = - mi.normal ;
 
       // NORMAL AT POINT OF INTERSECTION
       Vector diffuseNormal = aoff * mi.normal ;
@@ -480,7 +480,7 @@ void Raycaster::shPrecomputation_Stage1_Ambient( AllVertex& vertex )
 
     // sample must be +hemisphere
     // Want samples ONLY on the upper hemisphere (with the normal at the center)
-    real dot = vertex.norm • sampdir ; // angle acute, sample in upper hemisphere (centered around normal)
+    real dot = vertex.norm % sampdir ; // angle acute, sample in upper hemisphere (centered around normal)
     if( dot < 0 )  continue ; // skip this sample if angle with normal is obtuse
 
     // Check if the sample hits something
@@ -599,7 +599,7 @@ void Raycaster::shPrecomputation_Stage2_Interreflection( AllVertex& vertex )
     Vector sampdir = samp.dir() ;
 
     // it has to be on the + hemisphere to be usable
-    real dot = sampdir • vertex.norm ;
+    real dot = sampdir % vertex.norm ;
     if( dot < 0 )  continue ; // angle is obtuse, don't use it
     
     Ray ray( vertex.pos + EPS_MIN*vertex.norm, sampdir, 1000 ) ;
@@ -699,7 +699,7 @@ void Raycaster::wavelet_Stage2_Interreflection( AllVertex& vertex )
   {
     Vector &sampdir = rc->vAddr( si+j ) ;
 
-    real dot = sampdir • vertex.norm ;
+    real dot = sampdir % vertex.norm ;
     if( dot < 0 )  continue ; // angle is obtuse, don't use it
 
     // Here ray ok to use
@@ -715,7 +715,7 @@ void Raycaster::wavelet_Stage2_Interreflection( AllVertex& vertex )
       // Now that it hits some poly..
 
       // see angle of ray's direction with ___point I hit's___ normal.
-      real dot = - (ray.direction • intn.normal) ;
+      real dot = - (ray.direction % intn.normal) ;
 
       if( dot > 0 ) // acceptable
       {
@@ -852,7 +852,7 @@ void Raycaster::formFactors( int indexOfTri, Eigen::MatrixXf* FFs )
     int idx = (startRay + i)%rc->n ;
     Vector dir = rc->v( idx ) ;
 
-    real dot = tri->normal • dir ;
+    real dot = tri->normal % dir ;
 
     if( dot < 0 )  continue ; // this ray shoots into self
     //dotSum += dot ;
@@ -885,7 +885,7 @@ void sphericalWavelet()
   {
     int idx = (startRay + i)%rc->n ;
     Vector dir = rc->v( idx ) ;
-    real dot = dir • vertex.norm ;
+    real dot = dir % vertex.norm ;
     if( dot < 0 ) continue ; // discount this for now, but later you should accept light from behind, if it passes thru a translucent floor for example.
     // but if the floor is transparent, then the light doesn't show up on the surface though.  "backlighting" is really the opacity of the material
     // the light is passing thru.  you can't model it easily.

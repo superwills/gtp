@@ -1079,10 +1079,10 @@ void Mesh::visualizeCreateMesh(
       Vector c4 = sv4.toCartesian() ;
 
       // compute the normals
-      Vector n1 = ( (c2 - c1) × (c4 - c1) ).normalize() ;
-      Vector n2 = ( (c3 - c2) × (c1 - c2) ).normalize() ;
-      Vector n3 = ( (c4 - c3) × (c2 - c3) ).normalize() ;
-      Vector n4 = ( (c1 - c4) × (c3 - c4) ).normalize() ;
+      Vector n1 = ( (c2 - c1) << (c4 - c1) ).normalize() ;
+      Vector n2 = ( (c3 - c2) << (c1 - c2) ).normalize() ;
+      Vector n3 = ( (c4 - c3) << (c2 - c3) ).normalize() ;
+      Vector n4 = ( (c1 - c4) << (c3 - c4) ).normalize() ;
 
       // here the diffuse color is the same
       // as the emissive color.  However,

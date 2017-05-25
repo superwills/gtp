@@ -11,10 +11,17 @@ char* TextureSamplingModeName[] = {
   "Anisotropic"
 } ;
 
+// Fixes error calling DXGetErrorDescriptionA() below:
+// https://stackoverflow.com/questions/31053670/unresolved-external-symbol-vsnprintf-in-dxerr-lib
+int ( WINAPIV * __vsnprintf )( char *, size_t, const char*, va_list ) = _vsnprintf;
+
 bool DX_CHECK( HRESULT hr, char * msg )
 {
   if( FAILED( hr ) )
   {
+    // Weird error:
+    // 1>dxerr.lib( dxerra.obj ) : error LNK2001: unresolved external symbol _vsnprintf
+    // 1>..gtp.exe : fatal error LNK1120: 1 unresolved externals
     error( "%s. %s:  %s", msg, DXGetErrorStringA( hr ), DXGetErrorDescriptionA( hr ) ) ;
     return false ;
   }

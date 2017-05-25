@@ -757,6 +757,16 @@ Feb 3 2013
     multiply the w component or not (and uncertainity in CALLING
     the code and having to check) is really not worth it.
 
+May 25 2017
+  - Updated code to compile in VS 2017:
+    Replaced use of • with just the word "Dot",
+    replaced use of √ with just the word "sqrt"
+    error C3873 forbids use of these odd characters (•, ×, √)
+    as the FIRST CHARACTER of an identifier.
+    You can only use [A-Za-z_] as valid characters
+    for the first character of an identifier.
+    https://msdn.microsoft.com/en-us/library/565w213d.aspx
+    
 - Todo:
 programming
   - add CYLINDERS and TORUSES as basic primitives.

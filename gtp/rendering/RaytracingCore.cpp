@@ -38,7 +38,7 @@ RaytracingCore::RaytracingCore( int iNumRows, int iNumCols,
   cols = iNumCols ;
   
   raysPerPixel = iRaysPerPixel ;
-  √raysPerPixel = sqrt( (float)raysPerPixel ) ;
+  sqrtRaysPerPixel = sqrt( (float)raysPerPixel ) ;
   stratified = iStratified ;
   
   if( iTraceType[0] == 'W' || iTraceType[0] == 'w' ) // whit
@@ -279,7 +279,7 @@ Vector RaytracingCore::cast( Ray& ray, Scene *scene )
         // (even if they are area light sources use their centroid)
 
         Vector toLight = ( lightPos - intn->point ).normalize() ;
-        real dot = intn->normal • toLight ;
+        real dot = intn->normal % toLight ;
         if( dot < 0 )  continue ; // ray shoots INTO surface
         
         // cast ray towards the light.  no change in eta, just a power loss due to diffuse reflection.
@@ -297,7 +297,7 @@ Vector RaytracingCore::cast( Ray& ray, Scene *scene )
           Vector lightPos = scene->lights[i]->getRandomPointFacing( intn->normal ) ; // fuzzy shadows
 
           Vector toLight = ( lightPos - intn->point ).normalize() ;
-          real dot = intn->normal • toLight ;
+          real dot = intn->normal % toLight ;
           if( dot < 0 )  continue ; // ray shoots INTO surface
         
           // cast ray towards the light.  no change in eta, just a power loss due to diffuse reflection.
@@ -331,7 +331,7 @@ Vector RaytracingCore::cast( Ray& ray, Scene *scene )
             Vector rayCubeDir = cubeMap->getDirectionConvertedLHToRH( FACE, row, col ) ;
             rayCubeDir.normalize();
 
-            real dot = intn->normal • rayCubeDir ;
+            real dot = intn->normal % rayCubeDir ;
             if( dot < 0 )  continue ; // can't use this ray, because it's going to hit own face anyway.
 
             dotSum += dot ;
@@ -357,7 +357,7 @@ Vector RaytracingCore::cast( Ray& ray, Scene *scene )
         // "path tracing"
         // get random direction 
         Vector& dir = rc->vAboutAddr( intn->normal ) ; // retrieves a ray that doesn't shoot into the surface
-        real dot = dir • intn->normal ;
+        real dot = dir % intn->normal ;
 
         // shoot a diffuse ray feeler out.
         Ray pathRay( intn->point + EPS_MIN*intn->normal, dir, 1000.0, ray.eta, ray.power*diffuseColorAtIntn, ray.bounceNum+1 ) ;
@@ -384,7 +384,7 @@ Vector RaytracingCore::cast( Ray& ray, Scene *scene )
         {
           // On average, you only can use half the rays offered here,
           Vector& dir = rc->vAddr( startSamp+i ) ; // avoid copy, requires direction ok check
-          real dot = intn->normal • dir ;
+          real dot = intn->normal % dir ;
           if( dot < 0 ) // ray shoots into surface
           {
             i--; // didn't count
@@ -568,7 +568,7 @@ Vector RaytracingCore::brdfCast( Ray& ray, Scene *scene )
     // I'll make a BRDF up.  Say it's a strange material that 
     // reflects light specularly along a circle
 
-    if( in • intn.normal < 0 ) continue ; // skip directions that are obtuse to the normal
+    if( in % intn.normal < 0 ) continue ; // skip directions that are obtuse to the normal
 
     // Get the angles
     real tOut = out.angleWithNormalized( intn.normal ) ;
@@ -620,7 +620,7 @@ void RaytracingCore::traceRectangle( int startRow, int endRow, int startCol, int
       if( stratified )
       {
         // stratified sampling: jitter the rays evenly
-        int nbins = √raysPerPixel * √raysPerPixel ;
+        int nbins = sqrtRaysPerPixel * sqrtRaysPerPixel ;
 
         for( int c = 0 ; c < raysPerPixel ; c++ )
         {
@@ -630,19 +630,19 @@ void RaytracingCore::traceRectangle( int startRow, int endRow, int startCol, int
           if( c < nbins )
           {
             // cast nbins rays at least 1 per bin
-            subrow = c / √raysPerPixel ;
-            subcol = c % √raysPerPixel ;
+            subrow = c / sqrtRaysPerPixel ;
+            subcol = c % sqrtRaysPerPixel ;
           }
           else // for nbins to rpp
           {
             // cast the rest in random bins
-            subrow = rand() % √raysPerPixel ;
-            subcol = rand() % √raysPerPixel ;
+            subrow = rand() % sqrtRaysPerPixel ;
+            subcol = rand() % sqrtRaysPerPixel ;
           }
 
           Ray r = viewingPlane->getRay( row, col,
-            randFloat( -1 + subrow*(2./√raysPerPixel), -1 + (subrow+1)*(2./√raysPerPixel) ),
-            randFloat( -1 + subcol*(2./√raysPerPixel), -1 + (subcol+1)*(2./√raysPerPixel) )
+            randFloat( -1 + subrow*(2./sqrtRaysPerPixel), -1 + (subrow+1)*(2./sqrtRaysPerPixel) ),
+            randFloat( -1 + subcol*(2./sqrtRaysPerPixel), -1 + (subcol+1)*(2./sqrtRaysPerPixel) )
           ) ;
 
           ///window->addDebugRayLock( r, Vector(1,0,0), Vector(1,1,1) ) ;

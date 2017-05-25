@@ -152,15 +152,15 @@ real SH::YSH(int l, int m, real theta, real phi)  //  return sh( l,m,theta,phi )
 
   // GREEN VERSION:
   ////if(m==0) return K(l,0)*P(l,m,cos(theta));
-  ////else if(m>0) return √2*K(l,m)*cos(m*phi)*P(l,m,cos(theta));
-  ////else return √2*K(l,-m)*sin(-m*phi)*P(l,-m,cos(theta));
+  ////else if(m>0) return sqrt2*K(l,m)*cos(m*phi)*P(l,m,cos(theta));
+  ////else return sqrt2*K(l,-m)*sin(-m*phi)*P(l,-m,cos(theta));
 
   // NR VERSION:
   // The NR version of the functions worked in the K term into plegendre already.
   // This is arguably better.
   if(m==0) return plegendre(l,m,cos(theta));
-  else if(m>0) return √2*plegendre(l,m,cos(theta))*cos(m*phi);
-  else return √2*plegendre(l,-m,cos(theta))*sin(-m*phi);
+  else if(m>0) return sqrt2*plegendre(l,m,cos(theta))*cos(m*phi);
+  else return sqrt2*plegendre(l,-m,cos(theta))*sin(-m*phi);
 }
 
 real SH::YCheby(int l, int m, real theta, real phi)
@@ -262,14 +262,14 @@ real SH::Vlmm( const Matrix& r, int l, int m, int mm )
   else if( m > 0 )
   {
     if( m==1 )
-      return √2 * iPlumm(r,1,l,m-1,mm) ;
+      return sqrt2 * iPlumm(r,1,l,m-1,mm) ;
     else
       return iPlumm(r,1,l,m-1,mm)   -   iPlumm(r,-1,l,-m+1,mm) ;
   }
   else // if m < 0
   {
     if( m==-1 )
-      return √2 * iPlumm(r,-1,l,-m-1,mm) ;
+      return sqrt2 * iPlumm(r,-1,l,-m-1,mm) ;
     else
       return iPlumm(r,1,l,m+1,mm)   +
              iPlumm(r,-1,l,-m-1,mm) ; 

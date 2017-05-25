@@ -53,7 +53,7 @@ struct Plane
     Vector BA = A - B ;
     Vector BC = C - B ;
 
-    normal = BC × BA ;
+    normal = BC << BA ;
 
     if( normal.len2() == 0 )
     {
@@ -87,14 +87,14 @@ struct Plane
   //                    { +  point "in front" of plane, (ie on side of normal)
   //                    { -  point "behind" plane (ie on side that normal is NOT on).
   //inline real side( const Vector& p ) const {
-  //  return (normal • p) + d ;
+  //  return (normal % p) + d ;
   //}
 
   // Could experiment with thickness and see if it
   // makes this better, for whatever reason.
   inline PlaneSide iSide( const Vector& p ) const
   {
-    real val = (normal • p) + d ;
+    real val = (normal % p) + d ;
     
     if( IsNear( val, 0.0, EPS_MIN ) )  return PlaneSide::Straddling ;
     else if( val > 0 ) return PlaneSide::InFront ;

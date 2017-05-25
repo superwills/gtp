@@ -72,13 +72,13 @@ struct RayCollection
   // give you a vector, rejecting those more than 90 degrees from normal
   inline Vector vAbout( const Vector& normal ) {
     int idx = randInt( 0, n ) ; // start at a random position
-    while( randomDirs[ idx%n ].c • normal < 0 )  idx++;
+    while( randomDirs[ idx%n ].c % normal < 0 )  idx++;
     return randomDirs[ idx%n ].c ;
   }
 
   inline Vector& vAboutAddr( const Vector& normal ) {
     int idx = randInt( 0, n ) ; // start at a random position
-    while( randomDirs[ idx%n ].c • normal < 0 )  idx++;
+    while( randomDirs[ idx%n ].c % normal < 0 )  idx++;
     return randomDirs[ idx%n ].c ;
   }
 
@@ -86,12 +86,12 @@ struct RayCollection
     // advance idx until you reach one that is 90 degrees about the normal.
     // idx is advanced (pass by ref) so that if you are iterating here,
     // then it means you are probably are using the same normal multiple times
-    while( randomDirs[ idx%n ].c • normal < 0 )  idx++;
+    while( randomDirs[ idx%n ].c % normal < 0 )  idx++;
     return randomDirs[ idx%n ].c ;
   }
 
   inline Vector& vAboutAddr( int & idx, const Vector& normal ) {
-    while( randomDirs[ idx%n ].c • normal < 0 )  idx++;
+    while( randomDirs[ idx%n ].c % normal < 0 )  idx++;
     return randomDirs[ idx%n ].c ;
   }
   

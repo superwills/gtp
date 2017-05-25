@@ -4,6 +4,14 @@
 
 namespace swu
 {
+  int cfilesize(FILE* f)
+  {
+    fseek(f, 0, SEEK_END);
+    int size = ftell(f);
+    fseek(f, 0, SEEK_SET); //rewind( f ) ;
+    return size;
+  }
+
   #pragma region random number generation.
   // <cstdlib> has __awful__ resolution, this only has a space of
   // 32768 values.  If you're trying to place 10,000 samples on the sphere,
@@ -97,11 +105,6 @@ namespace swu
   //  //////}
   //  return facs[ n ] ;
   //}
-
-  int round( double val )
-  {
-    return (int)(val+0.5) ;
-  }
 
   // Prints now into your buffer
   int sprintNow( char* buf )

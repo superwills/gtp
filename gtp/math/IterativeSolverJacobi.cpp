@@ -80,7 +80,7 @@ void IterativeSolverJacobi::iterate() // override
                   (*A)( curRow, curRow ) ;
 
 #if ITERATIVE_SOLVERS_SHOW_PROGRESS_CONSOLE
-  printf( "Jacobi iteration %d, norm2=%f\r",
+  printf( "Jacobi iteration %lld, norm2=%f\r",
     iteration, getLastNorm() ) ;
 #endif
 }

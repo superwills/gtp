@@ -98,9 +98,9 @@ bool Sphere::intersectExact( const Ray& ray, Intersection* intn )
   const Vector &d = ray.direction ;
   Vector f = ray.startPos - this->pos ;
 
-  real a = d • d ;  // a is nonnegative, this is actually always 1.0
-  real b = 2*(f • d) ;
-  real c = f • f - radius*radius ;
+  real a = d % d ;  // a is nonnegative, this is actually always 1.0
+  real b = 2*(f % d) ;
+  real c = f % f - radius*radius ;
 
   real discriminant = b*b-4*a*c;
   if( discriminant < 0 )

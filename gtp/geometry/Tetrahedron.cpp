@@ -30,7 +30,7 @@ Tet::Tet( string iname, const Vector& center, real a, const Material& iMaterial 
 void Tet::calcPoints( const Vector& center, real a )
 {
   //         desired side len      /     ( value to make sidelen 1 )
-  real den = 2.0 * √2 ;
+  real den = 2.0 * sqrt2 ;
   real mult = a / den ;
 
   // the radius of the circumsphere is sqrt( 3 / 8 ) * a, 

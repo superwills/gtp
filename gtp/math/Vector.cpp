@@ -12,7 +12,7 @@ WaveParam::WaveParam( real iFreq, real iAmp, const Vector& iLongAxis, const Vect
 // projecting onto the longitudinal axis
 real WaveParam::getPhase( const Vector& pos ) const
 {
-  return pos • longAxis ;
+  return pos % longAxis ;
 }
 
 Vector Vector::randomPointInsideTri( const Vector& a, const Vector& b, const Vector& c )
@@ -46,7 +46,7 @@ Vector& Vector::jitter( real amnt )
   this->normalize() ;
 
   // jitter by amnt about a random axis
-  Vector axis = (*this) × SVector::random(1).toCartesian() ; //Vector::random(-1,1) ;
+  Vector axis = (*this) << SVector::random(1).toCartesian() ; //Vector::random(-1,1) ;
   axis.normalize() ;
 
   *this = (*this) * Matrix::Rotation( axis, sqrt(randFloat(0,amnt*amnt)) ) ;
@@ -89,7 +89,7 @@ Vector Vector::getRandomPerpendicular() const
   // Get a RANDOM up vector by crossing THIS
   // with random.
   Vector perp ;
-  do perp = *this × Vector::random(-1,1) ;
+  do perp = *this << Vector::random(-1,1) ;
   while( perp.len2() == 0 ) ; // if the random was EXACTLY the normal
   // (really small chance) (FWD), then
   // the up vector will still be 0.
@@ -100,17 +100,17 @@ Vector Vector::getRandomPerpendicular() const
 Vector& Vector::flip( const Vector& N )
 {
   // really negative of reflect, but with how it works easier to type code
-  return *this = 2*( *this • N ) * N - *this ;  // opposite to reflection
+  return *this = 2*( *this % N ) * N - *this ;  // opposite to reflection
 }
 
 Vector& Vector::reflect( const Vector& N )
 {
   //Vector L = this->normalizedCopy() ;
-  //return (L - 2 * ( (L • N) * N )).normalize() ; // no one said normalize it.// reflected ray dir
-  //*this = (*this - 2 * ( (*this • N) * N )) ; // reflected ray dir
+  //return (L - 2 * ( (L % N) * N )).normalize() ; // no one said normalize it.// reflected ray dir
+  //*this = (*this - 2 * ( (*this % N) * N )) ; // reflected ray dir
   //return *this ;
   
-  return *this = *this - 2*( *this • N ) * N ;  // this is right
+  return *this = *this - 2*( *this % N ) * N ;  // this is right
 }
 
 // n1=FROM, n2 is the density of the material
@@ -121,7 +121,7 @@ Vector& Vector::refract( const Vector& N, real n1, real n2 )
   Vector norm = N ;
 
   // check that "this" is at an angle > 180 degrees to normal (so they actually "hit")
-  real NdotL = N • *this ;
+  real NdotL = N % *this ;
 
   // ok, if NdotL is bigger than 0, then
   // this and N face the same general direction
@@ -146,7 +146,7 @@ Vector& Vector::refract( const Vector& N, real n1, real n2 )
     // physically, if you hit "the back side" of a surface,
     // you can just turn the normal around.
     norm = -N ;
-    NdotL = norm • *this ; // recalculate using new normal
+    NdotL = norm % *this ; // recalculate using new normal
   }
 
   real ti = PI - acos( NdotL ) ;        // ti=theta incident
@@ -177,7 +177,7 @@ Vector& Vector::refract( const Vector& N, real n1, real n2 )
   /////printf( "The transmitted angle=%f\n", DEGREES(tr) ) ;
 
   // get axis perpendicular to incident plane
-  Vector axis = ( *this × norm ).normalize() ;
+  Vector axis = ( *this << norm ).normalize() ;
   /////printf( "axis: " ) ;
   /////axis.print() ;
 
@@ -255,7 +255,7 @@ void Vector::wave( real time, real phase, real freq, real amp,
   float slope = freq*amp*cos( time*freq + phase ) ;
   float t = atan( slope ) ;
   
-  Vector zAxis = longAxis × transverseAxis ;
+  Vector zAxis = longAxis << transverseAxis ;
 
   // rotation about "z" axis 
   norm = norm * Matrix::Rotation( zAxis, t )  ;
@@ -299,12 +299,12 @@ Vector operator-( const Vector & a )
   return Vector( -a.x, -a.y, -a.z ) ;
 }
 
-real operator •( const Vector & a, const Vector & b )
+real operator%( const Vector & a, const Vector & b )
 {
   return a.Dot( b ) ;
 }
 
-bool operator ≈( const Vector & a, const Vector & b )
+bool operator,( const Vector & a, const Vector & b )
 {
   return a.Near( b ) ;
 }
@@ -316,7 +316,7 @@ Vector operator*( const Vector & a, const Vector & b )
 }
 
 // CROSS PRODUCT
-Vector operator ×( const Vector & a, const Vector & b )
+Vector operator<<( const Vector & a, const Vector & b )
 {
   return Vector(
     a.y*b.z - b.y*a.z,
@@ -417,7 +417,7 @@ Vector SVector::randomHemi( const Vector& normal )
   Vector cart = SVector::random( 1 ).toCartesian() ;
   
   do cart = SVector::random( 1 ).toCartesian() ;
-  while( cart • normal < 0 ) ;
+  while( cart % normal < 0 ) ;
 
   return cart ;
   
@@ -457,7 +457,7 @@ Vector SVector::randomHemiCosine( const Vector& normal )
   SVector sv = randomHemiCosine( 1.0 ) ;
 
   Vector y(0,1,0);
-  Vector axis = y × normal ;
+  Vector axis = y << normal ;
   real rads = y.angleWith( normal ) ;
   Matrix mat = Matrix::Rotation( axis, rads ) ;
 

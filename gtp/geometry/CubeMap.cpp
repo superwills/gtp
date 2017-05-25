@@ -1223,7 +1223,7 @@ void CubeMap::prelight( const Vector& vnormal )
         Vector cubeMapLightDir = getDirectionConvertedLHToRH( FACE, row, col ) ;
         ////////Vector cubeMapLightDir = getDirectionRH( FACE,row,col ) ;
         
-        real costi = cubeMapLightDir • vnormal ;
+        real costi = cubeMapLightDir.Dot( vnormal ) ;
 
         // discard condition, full alpha means 100% blockage.
         const static Vector blockedColor( 0,0,0,1 ) ; // I make alpha __1__, because
@@ -1246,7 +1246,7 @@ void CubeMap::prelight( const Vector& vnormal )
           // It was not blocked, so save the form factor here
           // if the vector is coming from a face on the "front" side
           // of the normal
-          real costj = cubeFaceFwd • cubeMapLightDir ;
+          real costj = cubeFaceFwd.Dot( cubeMapLightDir ) ;
 
           if( costj < 0 )  error( "costj (%f) < 0", costj ) ;
           
@@ -2301,8 +2301,8 @@ void CubeMap::getFaceRowCol( Vector direction, int& oface, real& orow, real& oco
     break ;
   }
   // choose the u and the v.
-  u = direction • cubeFaceBaseConvertingRight[oface] ;
-  v = direction • cubeFaceBaseConvertingUp[oface] ;
+  u = direction.Dot( cubeFaceBaseConvertingRight[oface] ) ;
+  v = direction.Dot( cubeFaceBaseConvertingUp[oface] ) ;
 
   // u was -1 at the left edge, +1 at the very right edge.
 

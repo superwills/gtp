@@ -486,8 +486,8 @@ struct Wavelet
           wavelet[ off + rows*i/2 + rows*j/2 ] = t2[off + rows*j] - wavelet[ off + rows*j/2 ] ; // first comp - avg.  // BACK HALF saves differences
 
           // normalization
-          //wavelet[ off + rows*j/2 ] *= √2 ;
-          //wavelet[ off + rows*i/2 + rows*j/2 ] *= INV_√2 ;
+          //wavelet[ off + rows*j/2 ] *= sqrt2 ;
+          //wavelet[ off + rows*i/2 + rows*j/2 ] *= INV_sqrt2 ;
         }
       
         // can't use memcpy here because they're not in order
@@ -664,8 +664,8 @@ struct Wavelet
   // This is the function body of the HAAR transform.
   // We "paste" this into function bodies,
   // because we don't trust inlining.
-  #define HAAR_TRANSFORM s[IODD]-=s[IEVEN];s[IEVEN]+=0.5*s[IODD];s[IEVEN]*=√2;s[IODD]*=INV_√2;
-  #define UNHAAR_TRANSFORM s[IODD]*=√2;s[IEVEN]*=INV_√2;s[IEVEN]-=0.5*s[IODD];s[IODD]+=s[IEVEN];
+  #define HAAR_TRANSFORM s[IODD]-=s[IEVEN];s[IEVEN]+=0.5*s[IODD];s[IEVEN]*=sqrt2;s[IODD]*=INV_sqrt2;
+  #define UNHAAR_TRANSFORM s[IODD]*=sqrt2;s[IEVEN]*=INV_sqrt2;s[IEVEN]-=0.5*s[IODD];s[IODD]+=s[IEVEN];
 
   template<typename T> static void haar( T*s, int n, int sp )
   {
@@ -676,10 +676,10 @@ struct Wavelet
         s[ IODD ] -= s[ IEVEN ] ; // PREDICT: //s[ IODD ] -= P( s[ IEVEN ] ) ; // here P(x)=1*x.
         s[ IEVEN ] += 0.5*s[ IODD ] ; // UPDATE: //s[ IEVEN ] += U( s[ IODD ] ) ; // here U(x)=0.5*x.
         
-        s[ IEVEN ] *= √2 ;  // Normalization
-        s[ IODD ] *= INV_√2 ;
-        //s[ IEVEN ] *= √2 ;
-        //s[ IODD ] *= √2 ;
+        s[ IEVEN ] *= sqrt2 ;  // Normalization
+        s[ IODD ] *= INV_sqrt2 ;
+        //s[ IEVEN ] *= sqrt2 ;
+        //s[ IODD ] *= sqrt2 ;
       }
     }
   }
@@ -690,10 +690,10 @@ struct Wavelet
     {
       unwaveletLoopJ
       {
-        s[ IODD ] *= √2 ; // "UN-NORMALIZE"
-        s[ IEVEN ] *= INV_√2 ;
-        //s[ IODD ] *= INV_√2 ; // "UN-NORMALIZE"
-        //s[ IEVEN ] *= INV_√2 ;
+        s[ IODD ] *= sqrt2 ; // "UN-NORMALIZE"
+        s[ IEVEN ] *= INV_sqrt2 ;
+        //s[ IODD ] *= INV_sqrt2 ; // "UN-NORMALIZE"
+        //s[ IEVEN ] *= INV_sqrt2 ;
         
         s[ IEVEN ] -= 0.5*s[ IODD ] ; // UN-UPDATE
         s[ IODD ] += s[ IEVEN ] ; // UN-PREDICT
@@ -731,8 +731,8 @@ struct Wavelet
         for( int j = 0 ; j < i; j += 2 )
         {
           // j counts from 0 .. 4, then 0 .. 2, then 0 .. 1
-          wavelet[ off + rows*j/2 ] = √2 * .5*(t2[off + rows*j] + t2[off + rows*(j+1)]) ; // a+b.  // FRONT half saves averages
-          wavelet[ off + rows*i/2 + rows*j/2 ] = √2 * .5*(t2[off + rows*j] - t2[off + rows*(j+1)]) ; // a-b.  // BACK HALF saves differences
+          wavelet[ off + rows*j/2 ] = sqrt2 * .5*(t2[off + rows*j] + t2[off + rows*(j+1)]) ; // a+b.  // FRONT half saves averages
+          wavelet[ off + rows*i/2 + rows*j/2 ] = sqrt2 * .5*(t2[off + rows*j] - t2[off + rows*(j+1)]) ; // a-b.  // BACK HALF saves differences
         }
       
         // can't use memcpy here because they're not in order
@@ -756,8 +756,8 @@ struct Wavelet
           // wavelet[off] takes you to the current row.
           // wavelet[off + j/2] takes you to the first half of the current row.
           // j counts from 0 .. 4, then 0 .. 2, then 0 .. 1
-          wavelet[ off + j/2 ] = √2 * .5*(t2[off + j] + t2[off + j+1]) ; // get avg.  // FRONT half saves averages
-          wavelet[ off + i/2 + j/2 ] = √2 * .5*(t2[off + j] - t2[off + j+1]) ; // diff.  // BACK HALF saves differences
+          wavelet[ off + j/2 ] = sqrt2 * .5*(t2[off + j] + t2[off + j+1]) ; // get avg.  // FRONT half saves averages
+          wavelet[ off + i/2 + j/2 ] = sqrt2 * .5*(t2[off + j] - t2[off + j+1]) ; // diff.  // BACK HALF saves differences
         }
 
         // copy the new avgs into the t2 buffer, from 'offset' to 'offset + i'
@@ -798,13 +798,13 @@ struct Wavelet
         {
           // undo the w_sumdiff transform of earlier
           // step on every transformed element
-          unwav[ off+ 2*j ] = INV_√2 * ( t2[off+j] + t2[off+j+i] ) ;  // avg+diff
-          unwav[ off+ 2*j + 1 ] = INV_√2 * ( t2[off+j] - t2[off+j+i] ) ; //avg-diff
+          unwav[ off+ 2*j ] = INV_sqrt2 * ( t2[off+j] + t2[off+j+i] ) ;  // avg+diff
+          unwav[ off+ 2*j + 1 ] = INV_sqrt2 * ( t2[off+j] - t2[off+j+i] ) ; //avg-diff
         }
 
         memcpy( t2+off, unwav+off, 2*i*sizeof(T) ); //copy i*2 elts (# produced)
         //for( int elt = 0 ; elt < 2*i ; elt++ )
-        //  t2[ off + elt ] *= INV_√2 ;
+        //  t2[ off + elt ] *= INV_sqrt2 ;
       }
       //*/
       // COLS
@@ -815,15 +815,15 @@ struct Wavelet
         int off = k ;
         for( int j = 0 ; j < i ; j++ )
         {
-          unwav[ off+ rows*(2*j) ] = INV_√2 * ( t2[off+rows*j] + t2[off+rows*(j+i)] ) ;   //avg+diff
-          unwav[ off+ rows*(2*j + 1) ] = INV_√2 * (t2[off+rows*j] - t2[off+rows*(j+i)]) ; //avg-diff
+          unwav[ off+ rows*(2*j) ] = INV_sqrt2 * ( t2[off+rows*j] + t2[off+rows*(j+i)] ) ;   //avg+diff
+          unwav[ off+ rows*(2*j + 1) ] = INV_sqrt2 * (t2[off+rows*j] - t2[off+rows*(j+i)]) ; //avg-diff
         }
         
         for( int elt = 0 ; elt < 2*i ; elt++ )
           t2[ off+ rows*elt ] = unwav[ off+ rows*elt ] ;
         // after each stage apply normalization
         //for( int elt = 0 ; elt < 2*i ; elt++ )
-        //  t2[ off+ rows*elt ] *= INV_√2 ;
+        //  t2[ off+ rows*elt ] *= INV_sqrt2 ;
       }
       //*/
       
@@ -840,10 +840,10 @@ struct Wavelet
       s[ IODD ] -= s[ IEVEN ] ; // PREDICT: //s[ IODD ] -= P( s[ IEVEN ] ) ; // here P(x)=1*x.
       s[ IEVEN ] += 0.5*s[ IODD ] ; // UPDATE: //s[ IEVEN ] += U( s[ IODD ] ) ; // here U(x)=0.5*x.
       
-      //s[ IEVEN ] *= √2 ;  // Normalization
-      //s[ IODD ] *= √2;
-      s[ IEVEN ] *= √2 ;  // Normalization
-      s[ IODD ] *= INV_√2 ;
+      //s[ IEVEN ] *= sqrt2 ;  // Normalization
+      //s[ IODD ] *= sqrt2;
+      s[ IEVEN ] *= sqrt2 ;  // Normalization
+      s[ IODD ] *= INV_sqrt2 ;
     }
   }
 
@@ -852,11 +852,11 @@ struct Wavelet
     int i = TwoToThe( level - 1 ) ;
     unwaveletLoopJ
     {
-      s[ IODD ] *= √2 ; // "UN-NORMALIZE"
-      s[ IEVEN ] *= INV_√2 ;
+      s[ IODD ] *= sqrt2 ; // "UN-NORMALIZE"
+      s[ IEVEN ] *= INV_sqrt2 ;
       
-      //s[ IODD ] *= INV_√2;   // "UN-NORMALIZE"
-      //s[ IEVEN ] *= INV_√2 ;
+      //s[ IODD ] *= INV_sqrt2;   // "UN-NORMALIZE"
+      //s[ IEVEN ] *= INV_sqrt2 ;
       s[ IEVEN ] -= 0.5*s[ IODD ] ; // UN-UPDATE
       s[ IODD ] += s[ IEVEN ] ; // UN-PREDICT
     }
@@ -871,7 +871,7 @@ struct Wavelet
     for( int i = 1 ; i <= n/2 ; i *= 2 )
     {
       for( int j = 0 ; j <= n/2 - i ; j += i )
-        s[ IEVEN ] += √3 * s[ IODD ] ;
+        s[ IEVEN ] += sqrt3 * s[ IODD ] ;
       
       for( int j = 0 ; j <= n/2 - i ; j += i )
       {
@@ -910,7 +910,7 @@ struct Wavelet
         s[ IODD ] += d4c1*s[ IEVEN ] + d4c2*s[ IPREVEVEN ] ;
 
       unwaveletLoopJ
-        s[ IEVEN ] -= √3 * s[ IODD ] ;
+        s[ IEVEN ] -= sqrt3 * s[ IODD ] ;
     }
   }
 
@@ -918,7 +918,7 @@ struct Wavelet
   {
     int i = TwoToThe( level - 1 ) ;
     waveletLoopJ
-      s[ IEVEN ] += √3 * s[ IODD ] ;
+      s[ IEVEN ] += sqrt3 * s[ IODD ] ;
 
     waveletLoopJLTD( 2, 0 )
       s[ IODD ] -= d4c1*s[ IEVEN ] + d4c2*s[ IPREVEVEN ] ;
@@ -948,7 +948,7 @@ struct Wavelet
     unwaveletLoopJLTD( 2, 0 )
     {
       s[ IODD ] += d4c1*s[ IEVEN ] + d4c2*s[ IPREVEVEN ] ;
-      s[ IEVEN ] -= √3 * s[ IODD ] ;
+      s[ IEVEN ] -= sqrt3 * s[ IODD ] ;
     }
   }
   #pragma endregion
@@ -991,8 +991,8 @@ struct Wavelet
       //cdf (2,2), (2,4), (2,6)
       waveletLoopJ
       {
-        s[ IODD ] *= INV_√2 ;
-        s[ IEVEN ] *= √2 ;
+        s[ IODD ] *= INV_sqrt2 ;
+        s[ IEVEN ] *= sqrt2 ;
       }
     }
   }
@@ -1005,8 +1005,8 @@ struct Wavelet
       unwaveletLoopJ
       {
         
-        s[ IEVEN ] *= INV_√2 ;
-        s[ IODD ] *= √2 ;
+        s[ IEVEN ] *= INV_sqrt2 ;
+        s[ IODD ] *= sqrt2 ;
       }
       
       //cdf (2,2)
@@ -1046,8 +1046,8 @@ struct Wavelet
       //cdf (2,2), (2,4), (2,6)
       waveletLoopJ
       {
-        s[ IODD ] *= INV_√2 ;
-        s[ IEVEN ] *= √2 ;
+        s[ IODD ] *= INV_sqrt2 ;
+        s[ IEVEN ] *= sqrt2 ;
       }
     }
   }
@@ -1059,8 +1059,8 @@ struct Wavelet
       //cdf (2,2), (2,4), (2,6)
       unwaveletLoopJ
       {
-        s[ IEVEN ] *= INV_√2 ;
-        s[ IODD ] *= √2 ;
+        s[ IEVEN ] *= INV_sqrt2 ;
+        s[ IODD ] *= sqrt2 ;
       }
 
       //cdf (2,4)
@@ -1103,8 +1103,8 @@ struct Wavelet
       //cdf (2,2), (2,4), (2,6)
       waveletLoopJ
       {
-        s[ IODD ] *= INV_√2 ;
-        s[ IEVEN ] *= √2 ;
+        s[ IODD ] *= INV_sqrt2 ;
+        s[ IEVEN ] *= sqrt2 ;
       }
     }
   }
@@ -1116,8 +1116,8 @@ struct Wavelet
       unwaveletLoopJ
       {
         //cdf (2,2), (2,4), (2,6)
-        s[ IEVEN ] *= INV_√2 ;
-        s[ IODD ] *= √2 ;
+        s[ IEVEN ] *= INV_sqrt2 ;
+        s[ IODD ] *= sqrt2 ;
       }
 
       //cdf (2,6)
@@ -1180,8 +1180,8 @@ struct Wavelet
 
       waveletLoopJ
       {
-        s[IODD] *= √2/3.0 ;
-        s[IEVEN] *= 3.0/√2 ;
+        s[IODD] *= sqrt2/3.0 ;
+        s[IEVEN] *= 3.0/sqrt2 ;
       }
     }
   }
@@ -1192,8 +1192,8 @@ struct Wavelet
     {
       unwaveletLoopJ
       {
-        s[IODD] *= 3.0/√2 ;
-        s[IEVEN] *= √2/3.0 ;
+        s[IODD] *= 3.0/sqrt2 ;
+        s[IEVEN] *= sqrt2/3.0 ;
 
         // cdf(3,1)
         s[IEVEN] -= (4.0/9.0)*s[IODD] ;
@@ -1219,8 +1219,8 @@ struct Wavelet
       // cdf(3,1)
       s[IEVEN] += (4.0/9.0)*s[IODD] ;
 
-      s[IODD] *= √2/3.0 ;
-      s[IEVEN] *= 3.0/√2 ;
+      s[IODD] *= sqrt2/3.0 ;
+      s[IEVEN] *= 3.0/sqrt2 ;
     }
   }
 
@@ -1229,8 +1229,8 @@ struct Wavelet
     int i = TwoToThe( level - 1 ) ;
     unwaveletLoopJ
     {
-      s[IODD] *= 3.0/√2 ;
-      s[IEVEN] *= √2/3.0 ;
+      s[IODD] *= 3.0/sqrt2 ;
+      s[IEVEN] *= sqrt2/3.0 ;
 
       // cdf(3,1)
       s[IEVEN] -= (4.0/9.0)*s[IODD] ;

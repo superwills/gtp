@@ -3,7 +3,7 @@
 
 #include "../util/StdWilUtil.h"
 #include <rapidjson/document.h>
-#include <rapidjson/filestream.h>
+#include <rapidjson/filereadstream.h>
 
 struct Properties
 {
@@ -18,7 +18,14 @@ struct Properties
       return ;
     }
 
-    rapidjson::FileStream fs( f ) ;
+    fseek( f, 0, SEEK_SET );
+    int bufSize = cfilesize( f );
+    // `readBuffer` shouldn't be needed
+    // http://rapidjson.org/md_doc_stream.html
+    string readBuffer( bufSize, 0 );
+    // readBuffer should be allowed to be passed as readBuffer.c_str()
+    // but FileReadStream needs char* not const char*
+    rapidjson::FileReadStream fs( f, &readBuffer[0], readBuffer.size()) ;
     rapidjson::Reader jsonReader ;
 
     jsonDoc.ParseStream<0>( fs ) ;

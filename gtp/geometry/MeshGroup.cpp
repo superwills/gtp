@@ -40,7 +40,7 @@ MeshGroup* MeshGroup::clone( Shape* ownerToBe ) const
   MeshGroup* mg = new MeshGroup( ownerToBe, mt, vt, maxTrisPerMesh ) ;
   for( int i = 0 ; i < meshes.size() ; i++ )
   {
-    printf( "Cloning mesh %d/%d", i+1, meshes.size() ) ;
+    printf( "Cloning mesh %d/%zd", i+1, meshes.size() ) ;
     mg->meshes.push_back( new Mesh( meshes[i], ownerToBe ) ) ;
   }
 
@@ -180,7 +180,7 @@ void MeshGroup::smoothOperator( real AllVertex::* memberName )
   int vID = 0 ;
   for( int meshNo = 0 ; meshNo < meshes.size() ; meshNo++ )
   {
-    printf( "Smooth mesh %d / %d    \r", meshNo, meshes.size() ) ;
+    printf( "Smooth mesh %d / %zd    \r", meshNo, meshes.size() ) ;
     // Different threads can take different verts to smooth.
     for( int vNo = 0 ; vNo < meshes[meshNo]->verts.size() ; vNo++ )
     {
@@ -232,7 +232,7 @@ void MeshGroup::smoothOperator( Vector (AllVertex::* memberName)[10], int index 
   int vID = 0 ;
   for( int meshNo = 0 ; meshNo < meshes.size() ; meshNo++ )
   {
-    printf( "Smooth mesh %d / %d    \r", meshNo, meshes.size() ) ;
+    printf( "Smooth mesh %d / %zd    \r", meshNo, meshes.size() ) ;
     for( int vNo = 0 ; vNo < meshes[meshNo]->verts.size() ; vNo++ )
     {
       AllVertex *vertex = &meshes[meshNo]->verts[ vNo ] ;
@@ -283,7 +283,7 @@ void MeshGroup::smoothOperator( Vector (AllVertex::* memberName)[10], int index,
   int vID = 0 ;
   for( int meshNo = 0 ; meshNo < meshes.size() ; meshNo++ )
   {
-    printf( "Smooth mesh %d / %d    \r", meshNo, meshes.size() ) ;
+    printf( "Smooth mesh %d / %zd    \r", meshNo, meshes.size() ) ;
     for( int vNo = 0 ; vNo < meshes[meshNo]->verts.size() ; vNo++ )
     {
       AllVertex *vertex = &meshes[meshNo]->verts[ vNo ] ;
@@ -424,7 +424,8 @@ void MeshGroup::calculateNormalsSmoothedAcrossMeshes()
     for( int vNo = 0 ; vNo < meshes[meshNo]->verts.size() ; vNo++ )
     {
       if( every( vNo, 1000 ) )
-        printf( "mesh %d / %d, vertex %d / %d     \r", meshNo+1, meshes.size(), vNo, meshes[meshNo]->verts.size() ) ;
+        printf( "mesh %d / %zd, vertex %d / %zd     \r",
+          meshNo+1, meshes.size(), vNo, meshes[meshNo]->verts.size() ) ;
 
       Vector avgNormal ;
 
@@ -518,7 +519,7 @@ Vector MeshGroup::getRandomPointFacing( const Vector& dir )
     {
       Triangle& tri = mesh->tris[j];
       
-      if( tri.normal • dir < 0 )
+      if( tri.normal % dir < 0 )
       {
         // this face is acceptable
         acceptableTris_meshNo_triNo.push_back( make_pair( i, j ) ) ;

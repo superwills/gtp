@@ -730,7 +730,7 @@ void GTPWindow::testSHRotation()
 
   // rotate the axis 
   baseAxis.rotateY( rads ) ;
-  //baseAxis = Matrix::RotationZ( rotY ) × baseAxis ;
+  //baseAxis = Matrix::RotationZ( rotY ) << baseAxis ;
 
   Matrix r = Matrix::Rotation( baseAxis, rads ) ; // * Matrix::RotationX( rotY ) ;
   addDebugLine( 0, Vector(.5,0,0), 8*baseAxis, Vector(1,0,0) ) ;
@@ -794,9 +794,9 @@ void GTPWindow::testSHDir()
 
   // we'd get the axis by reflecting the vector from the EYE to the
   // VERTEX IN QUESTION (ie look vector to a particular vertex)
-  real t = acos( look.y ) ;//look • Vector(0,1,0)
+  real t = acos( look.y ) ;//look % Vector(0,1,0)
 
-  Vector axis = Vector(0,1,0) × look ;
+  Vector axis = Vector(0,1,0) << look ;
 
   Matrix m = Matrix::Rotation( axis, t ) ;
 

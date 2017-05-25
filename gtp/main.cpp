@@ -162,7 +162,7 @@ void generateScene( int sceneNumber )
       Material( Vector(1,1,1), 0, specular?Vector(1,1,1,25):Vector(0,0,0,25), 0, 1.33 ) ) ;
 
     real xs = 2, zs = 2 ;
-    real nx = 5, nz=5;
+    int nx = 5, nz=5;
     char bName[255];
     int sNo = 1 ;
     for( int i = 0 ; i < nx ; i++ )
@@ -172,7 +172,7 @@ void generateScene( int sceneNumber )
         icosahedron->material.kd=icosahedron->material.ks=Vector::random() ;
         sprintf( bName, "sphere %d/%d", sNo++, nx*nz ) ;
         Sphere *sp = Sphere::fromShape( bName, icosahedron, icosahedron->r, subd ) ;
-        sp->transform( Matrix::Translate( (i-(nx-1)/2.0)*xs, p, (j-(nz-1)/2.0)*zs ) ) ;
+        sp->transform( Matrix::Translate( (i-(nx-1.)/2.)*xs, p, (j-(nz-1.)/2.)*zs ) ) ;
         window->scene->addShape( sp ) ;
       }
     }
@@ -1266,13 +1266,13 @@ void loadScene()
       //real freq = randFloat( 0.5, 1 ) ;
       //real amp = 1/(4*freq) ;
       // the more "vertical" it is, the LARGER it's amplitude
-      ///real amp = fabs( longAxis • Vector(0,1,0) )/25 ;
+      ///real amp = fabs( longAxis.Dot( Vector(0,1,0) ) )/25 ;
 
       // the more "vertical" it is, the smaller it's amplitude
-      //amp = 0.004 + ( 1 - fabs( longAxis • Vector(0,1,0) ) )/4 ; 
+      //amp = 0.004 + ( 1 - fabs( longAxis.Dot( Vector(0,1,0) ) ) )/4 ; 
 
       // the more "vertical" it is, the LARGER it's amplitude
-      //amp += 0.2*fabs( longAxis • Vector(0,1,0) ) ;
+      //amp += 0.2*fabs( longAxis.Dot( Vector(0,1,0) ) ) ;
 
       window->waveGroup.push_back(
         WaveParam( freq, amp, longAxis, transAxis )
@@ -1767,7 +1767,9 @@ LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam 
     {
       //info( Magenta, "Window active" ) ;
       //1: This happens first
-      window->activate() ;
+      // activate gets called on startup before the ctor
+      // returns
+      if( window )  window->activate() ;
     }
     else
     {

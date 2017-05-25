@@ -538,8 +538,8 @@ Matrix Matrix::Scale( const Vector& v )
 Matrix Matrix::LookAt( const Vector & eye, const Vector & look, const Vector & up )
 {
   Vector fwd = (look - eye).normalize() ; // FORWARD, or z-axis.
-  Vector right = (fwd × up).normalize() ;     // RIGHT, or x-axis.
-  Vector oUP = (right × fwd) ; // UP, or y-axis:  already normal since u and w are perp and normalized
+  Vector right = (fwd << up).normalize() ;     // RIGHT, or x-axis.
+  Vector oUP = (right << fwd) ; // UP, or y-axis:  already normal since u and w are perp and normalized
 
   Matrix rot = ViewingFace( right,oUP,fwd ) ; // you have to take
   // the change basis matrix AND INVERT IT (by transposing), because
@@ -558,8 +558,8 @@ Matrix Matrix::LookAt( const Vector & eye, const Vector & look, const Vector & u
 Matrix Matrix::LookAtFORWARD( const Vector & eye, const Vector & look, const Vector & up )
 {
   Vector fwd = (look - eye).normalize() ;
-  Vector right = (fwd × up).normalize() ;
-  Vector oUP = (right × fwd) ;
+  Vector right = (fwd << up).normalize() ;
+  Vector oUP = (right << fwd) ;
 
   Matrix rot = TransformToFace( right,oUP,fwd ) ;
   Matrix trans = Translate( eye ) ;

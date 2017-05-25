@@ -234,9 +234,9 @@ struct BezierPatch : public Shape
         else if( p1.Near( p2 ) || p1.Near( p4 ) )
         {
           // there is only one triangle 2,3,4
-          Vector n2 = ( (p3 - p2) × (p4 - p2) ).normalize() ;
-          Vector n3 = ( (p4 - p3) × (p2 - p3) ).normalize() ;
-          Vector n4 = ( (p2 - p4) × (p3 - p4) ).normalize() ;
+          Vector n2 = ( (p3 - p2) << (p4 - p2) ).normalize() ;
+          Vector n3 = ( (p4 - p3) << (p2 - p3) ).normalize() ;
+          Vector n4 = ( (p2 - p4) << (p3 - p4) ).normalize() ;
 
           AllVertex vertex2( p2 + expOffset*n2, n2, material ) ;
           AllVertex vertex3( p3 + expOffset*n3, n3, material ) ;
@@ -247,9 +247,9 @@ struct BezierPatch : public Shape
         else if( p2.Near( p3 ) || p3.Near( p4 ) )
         {
           // there is only one triangle 1,2,4
-          Vector n1 = ( (p2 - p1) × (p4 - p1) ).normalize() ;
-          Vector n2 = ( (p4 - p2) × (p1 - p2) ).normalize() ;
-          Vector n4 = ( (p1 - p4) × (p2 - p4) ).normalize() ;
+          Vector n1 = ( (p2 - p1) << (p4 - p1) ).normalize() ;
+          Vector n2 = ( (p4 - p2) << (p1 - p2) ).normalize() ;
+          Vector n4 = ( (p1 - p4) << (p2 - p4) ).normalize() ;
 
           AllVertex vertex1( p1 + expOffset*n1, n1, material ) ;
           AllVertex vertex2( p2 + expOffset*n2, n2, material ) ;
@@ -261,10 +261,10 @@ struct BezierPatch : public Shape
         {
           // both exist.
           // compute the normals
-          Vector n1 = ( (p2 - p1) × (p4 - p1) ).normalize() ;
-          Vector n2 = ( (p3 - p2) × (p1 - p2) ).normalize() ;
-          Vector n3 = ( (p4 - p3) × (p2 - p3) ).normalize() ;
-          Vector n4 = ( (p1 - p4) × (p3 - p4) ).normalize() ;
+          Vector n1 = ( (p2 - p1) << (p4 - p1) ).normalize() ;
+          Vector n2 = ( (p3 - p2) << (p1 - p2) ).normalize() ;
+          Vector n3 = ( (p4 - p3) << (p2 - p3) ).normalize() ;
+          Vector n4 = ( (p1 - p4) << (p3 - p4) ).normalize() ;
         
           AllVertex vertex1( p1 + expOffset*n1, n1, material ) ;
           AllVertex vertex2( p2 + expOffset*n2, n2, material ) ;
