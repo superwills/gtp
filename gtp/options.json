@@ -1,0 +1,57 @@
+{
+  "scene":{
+    "use far lights":1,
+    "first comment":"FOR RAYTRACING AND RADIOSITY (VO WON'T WORK (it will look blinky))",
+    "second comment":"FOR VO AND SH (RAY TRACES AND RADIOSITY WON'T WORK)",
+    "further explanation":"FAR LIGHTS are when light source geometry ARE REMOVED FROM THE SCENE"
+  },
+  "sh":{
+    "samples":10000,
+    "samples to cast":10000,
+    "bands":8,
+    "chebyshev":0,
+    "interreflect":1,
+    "use original cubemap":0, "comment":"vo uses point lights.  sh can use that same pt light set, or the original cm directly"
+  },
+  "cubemap":{
+    "cubemap comment":"this area sets the default cubemap settings",
+    "pixels per side":256,            "more px per side":"better looking raytraces",
+    "bilinear interpolation":1,       "use bilinear interpolation when sampled by rays?":"yes looks better, no is faster"
+  },
+  "wavelet":{
+    "compression settings comment":"this area deals with how heavily to compress wavelets",
+    "pixels per side":256,            "more px per side":"takes much longer to find viz map cube renders",
+    "compression light map":12,       "light map compression comment":"if within THIS AMOUNT near zero, gets zerod. 0 means KEEP ALL.",
+    "compression vis map":0.00001,    "vis map comment":"visibility maps have really small values, so make this value SMALLER for more exact lighting",
+    "use railed quincunx":0,          "quincunx lattice wavelet transform":"1=yes use quincunx; 0=use haar"
+  },
+  "radiosity":{
+    "hemicube pixels per side":64
+  },
+  "ray":{
+    "collection size":1000000,
+    "rays per pixel":3500,
+    "stratified":0,
+    "trace type":"p",           "w/d/p":"whitted/distributed/path",
+    "rays distributed":1,       "multimeaning":"if using distributed rt, # rays per light; if using path tracing: # rays diffuse gather",
+    "rays cubemap lighting":0,  "rcl comment ":"traces a ray to EACH cubemap pixel",
+    "num bounces":3,
+    "termination energy":0.0,   "term ener":"not used, just use bounce count as terminator",
+    "perlin sky on":1,
+    "show bg":1,
+    "num caster rays":10000,    "caster rays comment":"ao and vo use ALL these rays, but SH uses 'sh::samples to cast'"
+  },
+  "fog":{
+    "mode":0,
+    "color":1,
+    "furthest distance":1000,
+    "density":0.02
+  },
+  "space partitioning":{
+    "on":1,
+    "split":1,           "split comment":"split polys or no",
+    "split type":"o",    "split type comment":"k=kdtree, o=octree, ok=octree with kd-style divisions",
+    "max depth":5,
+    "max items":20
+  }
+}

@@ -1,0 +1,853 @@
+﻿June 24 2011
+  - In the last commit..
+    - Mainly enabled a change of basis function to allow me to rotate the viewing plane
+    - Added a method Matrix::ChangeBasis to change basis
+    - bugfix: Inverted S and T coordinates when rendering texture because D3D has inverted y on texture coordinates
+  
+  - moved material to Shape, not Mesh.
+  
+  -- thinking about:
+    - Radiosity is a texture where i store rgb light refln values
+    - depth textures ? (depth in the radiosity/raytraced textures. just for..)
+
+  - use 'git add -u' to remove files you deleted
+  - use 'git commit -a' to do a similar thing on commit
+  
+July 4 2011
+  - Fix the perspective projection issue in the raytracing code
+    -- I fixed it, it was 2 things:
+	  - the eye should sit where the d3d eye is. the plane sits in front of the eye.
+	    you don't push the eye back.
+      - setLook was wrong, the vectors weren't perfectly orthogonal
+
+July 5 2011
+  - Fixed normal direction pg 174 "Realistic RT"
+  - Need to integrate shaders to use float values for color
+    so material isn't (255)'s
+
+July 6 2011
+  - Added a shader, and float colors
+
+July 7 2011
+  - Fixed normal generation on the sphere (it was always normal to surface of
+    poly, so normals weren't "smooth".)
+  - completed pixel shader.
+  
+  - next: interreflections, radiosity.
+
+July 8 2011
+  - Upgrading gtp to d3d11
+
+July 16 2011
+  - Porting the project to d3d11 is much harder than expected
+  - All reliance on gpu (IDirect3DDevice9*) interface must be
+    abstracted away into higher level method calls __that provide service__
+    regardless of underlying GPU.
+
+  - I'm going to start doing this with D3D9.
+
+July 19 2011
+  - I quit 2 days ago, it was too painful.  Took Sunday off, Monday did math,
+    tonight I'm back.
+
+July 22 2011
+  - I got it to compile today in D3D9, with the Surface /*as*/ D3D9Surface name switch
+    (so the concrete implementation of WHAT Surface imp to use is a compile time switch).
+
+  - Eventually abstract interface "training wheels" can BE REMOVED (which means keyword override
+    should also be removed) and each concrete impl should work on its own.
+
+  - Still have some bugs in rendering and in Matrix::LookAt, to do with 
+    LH/RH coordinate systems
+
+July 26 2011
+  - Finally got d3d9 render fully working.  It uses vertex shaders and is
+    free of the fixed function pipeline.
+
+  - d3d9 is up and running, tomorrow's a meeting, instead of working to get
+    eq d3d11 fnality (very difficult, since they changed the api so much AND
+    it takes considerably more lines of code to get the same thing),
+    going to improve the raytracer instead.
+
+July 29 2011
+  - Very surprised to have made it work.
+  - D3D11 is now up and running.  Further development can be made in D3D11/Cg.
+  - This was very tedious, and not everything (hemicube etc) is fully working,
+    and the d3d11 imp still shows some quirks (I had to reverse byte order on colors
+    for example in ByteColor), and there are still a lot of #ifdef d3d11/#endif pairs
+    that should be factored out (abstracted away into IGraphicsWindow) soon.
+    But this has been a step forward I've wanted to do for a long time, and since
+    D3D11 forces you to use vertex buffers, I am using them.
+    The d3d11 documentation is really in the debug output.  Commit.
+
+Aug 3 2011
+  - I'm working on OCTREE and KD TREE and BSP TREE and
+    transmission in the raytracer.
+
+Aug 4 2011
+  - Removed virtual void lookAt( const Vector& eye, const Vector& look, const Vector& up ) PURE ;
+            virtual void project( real fovy, real aspect, real zNear, real zFar ) PURE ;
+            a couple of others from IGraphicsWindow, since d3d11 doesn't have a fixed
+            fcn pipeline, these make no sense (since d3d11window doesn't nec have
+            access to all your shader vars)
+  - AABB intersection improved sample scene raytrace time from ~17 sec to ~10 sec
+
+Aug 5 2011
+  - Changed the way VertexBuffer templated class works in D3D11 (can now draw itself)
+  - About to remove lineMesh member from AABB, its a terrible artifact
+  - What's a LineMesh?  A list of vertices anyway.
+
+Aug 9 2011
+  - Added DirectWrite (works but not in combination with RT tex, needs refinement)
+  - Added SH function calculation and visualization
+
+Aug 10 2011
+  - Basic SH
+  - Added Mersenne Twister to random number generation
+
+Aug 12 2011
+  - Working on SH
+
+Aug 13 2011
+  - SH
+
+Aug 14 2011
+  - Added richtext log out
+  - Fixed a bug in raytracing nearplane calc where I had said "nearPlane is opp, _width_ is adj"
+    but really its "HEIGHT is adj"
+
+Aug 15 2011
+  - I added ProgressBar to RichEdit but its a bit slow
+
+Aug 16 2011
+  - I added index/vertex buffers d3d9/+indexed 11
+
+Aug 17 2011
+  - Got SH to work for 1 stage reflection
+  - fixed a bug where AABB wasn't being used for
+    derivative classes of Shape (classes overrode ::intersects
+    but didn't exploit aabb)
+  - Really, no class needs to override ::intersects UNLESS they
+    use an alternate algorithm to AABB?meshintn:NULL
+  - Cut raytrace time by 40s on same scene (180s to 140s)
+    by cutting into ROWS not SQUARES (distributes work more evenly
+    and you're not waiting on 2/5 squares at the end.)
+  - I am changing the signature of Intersection* INTERSECTS(ray) to
+    bool Intersects( Ray, Intersection** )
+    - I did this and it doesn't appear to have sped up raytracing time
+      appreciably (even with the new shortcuts/early returns)
+
+Aug 18 2011
+  - Completely fixed d3d11 text.  Now free of d3d9 (there are no features
+    implemented in d3d9 that are not implemented in d3d11 - except texture loading).
+
+Aug 19 2011
+  - I had to change Intersection to SHIntersection.
+    - Whoop. Changed it back.
+  - I added 3 members to Triangle: int iA,iB,iC.
+    - Just this one decision eliminated all SHIntersection/SHTriangle nonsense. Now
+      a triangle knows __which vertex it came from__ in the original mesh, if any.
+      The vertex is duplicated in the Triangle object for both convenience and to
+      not corrupt the Triangle class with total dependence on some other location for
+      the actual vertex values.
+  - Added together SH functions by raycasting, result is incorrect atm (barycentric weighted sum
+    of SH functions is producing strangely large SH functions at some points, and
+    I think it has to be divided by something or other.)
+
+Aug 22 2011
+  - I fixed a bug to do with a corrupt image in d3d9 because
+    I had NOT created the device with the MULTITHREADED flag,
+    but I was creating vertex buffers etc on separate threads.
+    This wreaks the program.
+  - Got basic SH working!  Its highly inaccurate at this point,
+    but basic interreflected SH in one color band is kinda working.
+  - SH Functions exploding is basically sh functions not being divided
+    by (4*PI/numSamples)
+
+Aug 23 2011
+  - I wasn't using SAMPLES (precomputed samples) .. I was raycasting
+    all new rays (not good!). About to fix in next revision.
+  - Fixed a bug where casted rays are starting too close to surface
+    they are fired from, so shape self intersects ("surface acne")
+  - Fixed "not using samples"
+  - I think I have interreflections working, but I'm only using
+    magnitude (need color bands)
+  - SH working
+
+Aug 28 2011
+  - Took 2 days off code and tried to refactor/templatize vertices
+    - failed and the attempt is parked in v0.0.3-xdead-templatizing-SHMesh
+    - Ran into a problem where template <typename T> was suddenly perculating
+      uncontrollably through the code, even where vertex type was completely
+      irrelevant (in class Octree for example, which was going to have to be
+      parameterized)
+
+    - The solution to this problem is to use an abstract base class Mesh, and
+      put that member in Shape.  Now the concrete impl of Mesh (what vertex type
+      it uses) is completely invisible to Shape.  Shape only wants to INTERSECT
+      and RENDER the mesh.
+  - Right now I have completed SHSample's containing RGB channels only
+
+Aug 29 2011
+  - I finished templatizing.
+  - The solution was to ONLY templatize VertexBuffer (ie change nothing except
+    introduce an abstract base class to "type erase" VertexBuffer<T>.
+  - Now your interface to a VertexBuffer from Mesh is one method: draw().
+    After creation of the vertex buffer, that's all you can do.
+    So there is one bit of cruft: you have to remember your vertex
+    format before calling .draw().
+    Better to put the shader in the vertex buffer.
+  - Now there's a single vertex type called AllVertex
+    that stores EVERY BIT OF DATA about each vertex.
+    Triangle construction is the same as before - based on
+    physical location and INTEGER INDICES into the master verts array.
+    This is the cleanest and cruft-less design I came up with - bad
+    paths were:
+      - Trying to make Vertex type TOTALLY parameterizable -- this isn't useful
+        because there's SO MUCH data in each vertex that the GPU just can't
+        use
+        - In addition I am using 4 component DOUBLE vectors for Pos, Norm, Color while
+          when sent to the GPU, Pos, Norm will be changed to a FLOAT3.
+  - I'm not sure I extracted every change in the v0.0.3-xdead-templatizing-SHMesh branch,
+    but that was completely the wrong way to go down, so I'm happy I abandoned it.
+  - I completely finished base refactoring, Mesh now is contained within MeshGroup
+  - However the render __appears different__, code needs review
+
+Aug 30 2011
+  - I'm successfully loading obj files now
+    using my code but I still have to compute normals on the loaded models that
+    don't supply normals
+
+Aug 31 2011
+  - Calculated basic normals
+  - Found adjacent faces
+
+Sept 1 2011
+  - fixed a bug in 
+
+Sept 4 2011
+  -- (off Sept 2,3)
+  - fixed device lost problems in d3d9 (don't appear in d3d11 so nothin doin')
+  - texRaytrace in d3d11 with 800x600 (nonsquare) resolution didn't work (shearing problem)
+    which was a SYS MEM PITCH problem (i assumed it was 0, it was not).
+  - I fixed 'the disco bug' by simply NOT creating and destroying vertex buffers
+    every frame (Release/run mode)
+
+Sept 5 2011
+  - Added maxTriCount to MeshGroup but did not use. Idea was to
+    have MeshGroup control the size of the meshes being used.
+  - Octree creation complete
+
+Sept 6 2011
+  - Finished octree intersection. It sped up raytracing on large scale models
+    A LOT.
+
+Sept 7 2011
+  - I renamed Scene::getClosestShape to getClosestIntn, because its name was misleading.
+    (You can't get the closest shape without doing a detailed intersection).
+  - I finished doing ray-octree opts.
+  - It turns out the EXACT intersection is _a lot_ faster than fine mesh (obviously! for sphere!)
+    BUT if the octree caches only triangles, then its miserably slow to form the map< Shape*, list<Triangle*> >.
+    The best solution is an Octree<T>, (which in turn uses AABB containment to decide on subdiv)
+      OR 
+    to park the Shape* parallel to the Triangle* list in the original octree.
+      OR
+    to use the List<Tri*> that you get from the Octree (as possible tri hits) to help
+    the triangle.intersects method (reduce the check to lg(n) check) (but that seems really inefficient)
+
+Sept 8 2011
+  - I templatized the Octree/ONode classes to contain arbitrary objects.  The only requirement is
+    that the AABB class has a .contains( OBJECTTYPE_T ) method for the object type you are filling
+    the octree with.
+
+Sept 9 2011
+  - Removed the old progress bar and added one via d2d
+
+Sept 11 2011
+  - intn->tri->meshOwner->verts is damaged (its a COPY of the verts array, not the original)
+    - the bug is in the assignment (*this) = *newMesh ;
+    - it _doesn't_ invoke the copy constructor
+      - possible solutions:
+        - change verts to a pointer
+        - don't do that deref'd pointer assign weirdness
+
+Sept 12 2011
+  - I fixed the bug that I found yesterday.  It was the result of a careless mistake when
+    adding the MESHOWNER member to struct Triangle.
+    - recursivelySubdivideAndAddToMeshWhenSmallEnough was using the ORIGINAL mesh
+    - also.. 
+    - then the newMesh->VB was being deleted when I called DESTROY( newMesh ) ;
+
+Sept 15 2011
+  - Made ProgressBar add itself to Window on creation, remove itself
+    on destruction.
+  - Batches now work (code that is allowed to run in parallel, but Batches run in series,
+    in the order they are added to the ThreadPool (via createBatch() or addBatch())
+  - There was a race condition in ProgressBar placement which I eliminated
+  - Now as you can see from the latest screenshots, I think ambient occlusion is
+    doing the OPPOSITE of what it should be doing.  _Occluded_ areas are bright,
+    and clear areas are dark.
+
+Sept 17 2011
+  - The ray-octree has holes in it.
+  - The reason MIGHT be memory leaks
+  - The app has an slow "idle" memory leak
+  - The most likely reason is the INTERSECTION routine's behavior.
+    - It might have been better to always return a stack allocated intn object
+      to avoid the leaks.
+  - 594 leaks. initial.
+  - 575 leaks. after fixing GTPWindow dtor
+  - 44 leaks. after adding calls to DELETE each SHAPE, delete each
+    MeshGroup and delete each Mesh. Exit is MUCH cleaner, faster.
+  - 34 leaks after flushing log on exit. log file now reads complete.
+  - 24 leaks after fixing d3d11window's deallocation rout.
+  - There is a memory leak (~1MB/s) after calling cgD3D11SetTextureParameter on Radeon 5850, Catalyst 11.8, Windows 7 64-bit.
+    - Reported to NVIDIA (in case its a cg bug) and ATI (in case its a driver bug).
+    - Should also report to MSFT, but figure ATI will do that.
+    - Switching to HLSL, which is actually better than CG (cleaner integration with d3d11,
+      and seems to not have as much separate function calling, and variable passing
+      to get it to run.  Oodles less start up code too (NO initialization).
+
+Sept 18 2011
+  - Fixed the octree bug.
+    (tz > tx && tz > ty)
+    Should have been:
+    (tz >= tx && tz >= ty)
+    because when a ray hits and the t's were EXACTLY equal
+    (which happens MORE THAN YOU MIGHT REASONABLY EXPECT!!)
+    the ray DOESN'T hit the aabb at all.
+    Result was wrong octree query results and hence apparent "holes" in meshes
+    from some angles.
+  - The 2nd bug (after I fixed the first) was operator precedence of
+    the ternary operator ? : is LOWER than &&.
+
+    else if( BetweenEx( ty, 0, ray.length ) &&
+             rayOutside ? (ty >= tx && ty >= tz):
+                          (ty <= tx && ty <= tz) )
+
+    Change to
+
+    else if( BetweenEx( ty, 0, ray.length ) &&
+           ( rayOutside ? (ty >= tx && ty >= tz):
+                          (ty <= tx && ty <= tz) ) )
+
+Sept 19 2011
+  - Had to change the build configuration to x64,
+    when you get around 1.9GB the application starts
+    getting 0's for malloc, and the app quits abruptly
+    without warning
+    - With x64 it works, but the CG memory leak is annoying
+
+Sept 24 2011
+  - 7:31pm Finished converting over to hlsl
+    - tex memory leak stopped
+    - there is definitely a leak in the raytracing routine
+    - there are definitely leaks in threadPool
+
+Sept 27 2011
+  - Fixed memory leak in Shape::SHProject1
+    (didn't destroy MeshIntersection object).
+    - The reason Intersects accepts a double ptr
+      is because we wanted the type of intn you get
+      back (plain Intersection* or MeshIntersection*)
+      to be NOT determined by caller.
+      - Doesn't work tho, and now you have to
+        use a different octree to do MeshIntn vs true
+        shape intn anyway.
+  - Cube map texture projection started
+    - Just getting a hang of what's going on D3D11 texCube layout
+      (face wise), 0=+x, 1=-x, 2=+y, 3=-y, 4=+z, 5=-z
+
+Sept 29 2011
+  - Env maps working, kind of
+
+Sept 30 2011
+  - hdr cube maps (r32g32b32a32 pixels)
+  - added color normalization routine, for after pass 2 sh
+    - (the colors still seem super saturated sometimes)
+    - hdr lighting - the r16b16g16a16 pixel format is the
+      only floating point format the display supports.
+  - fixed a bug in Vector::componentWiseDivide ;)
+
+Oct 1 2011
+  - SH lighting is working now, with an HDR cube map (clamped)
+
+Oct 5 2011
+  - Added file loading etc.
+
+Oct 6 2011
+  - There are some bugs.
+    - Q: Why is the octree not being reconstructed on load?
+      - A: Because I didn't save the tris array.
+        Uh oh, "Mesh* meshOwner" in class Triangle cannot
+        be reconstructed!  Everything you want to load/save
+        must be master arrays, and not other stuff.
+      - So its probably easier to load models ONE WAY,
+        (like procedurally) and load vertex attributes from
+        file only (but that's really tough).
+  - Some maintenance/corrections:
+    - SHLIGHTING should be on a texcoord, not color
+
+Oct 11 2011
+  - Strip out D3D9. This is a graphics test project, not a d3d9 support engine.
+  - Stripped out some other idle/commented out code (test code that I'm not going back to)
+  - I have added a visualization method for
+    SH projections that create a sphere with COLOR values
+    based on the SH projection summed value
+  - Creating an LightCubeMap class for considering
+    a cube map as a light source and encapsulating that fnality
+
+Oct 12 2011
+  - the 'facts' array was causing problems for factorials bigger than 20 ;)
+    it has been deleted.  i added MPIR just in case, but I'm not using it now.
+
+Oct 13 2011
+  - created CubeMapLight object w/load/save capabilities
+
+Oct 15 2011
+  - When saving, a derived class should call the base class save routine FIRST,
+    because when loading, the base class ctor runs before the derived class ctor.
+
+Oct 16 2011
+  - lineMeshes<VertexCf> variable removed
+  - I finally have EVERYTHING working. I believe the SH computations _are_ correct
+    and I DID have an issue with the cubemap being inverted (thanks to d3d using
+    and LH coordinate system on the cube map, but mysteriously using the correct
+    orientation when you sample it using TEXCUBE in a shader), so my result
+    was inverted previously, which explains the upside down-y rabbit shadows.
+
+    Anyway, now I've got a visualization of any light function (geometric AND colormapped)
+    and its really easy to see what's going on/if its correct.
+  - fixed the threadpool crash-on-exit bug
+
+Oct 17 2011
+  - because each _object_ now renders itself, there is no need
+    for a D3D11Window to be able to render( Scene ).
+    - Anyway this isn't crossplatform anyway, but its interesting
+      to know.  Pushing device independence to the LOWEST LEVEL
+      in the hierarchy makes for easiest programming.
+
+Oct 19 2011
+  - About to add arbitrary lightray bounces
+
+Oct 20 2011
+  - There is no such thing as an "ambient" light, stripped out
+  - RT arbitrary # bounces
+    - I revised the raytracing code to use material specularity
+      to determine weighting of reflected light color.
+      This seems correct to me.
+  - CHANGED THE Intersection** ptr to Intersection* and encourage
+    stack allocating the Intersection* variable.
+  - header file version 0.3: changed the format of Materials
+    (removed Ambient, and 3 "transmission" doubles, added "kt")
+
+Oct 21 2011
+  - Added fresnel transmission, not correct yet
+
+Oct 24 2011
+  - Actually fresnel was correct, just needed to be tweaked
+  - Fixed problem with Matrix::Face - actually there was no
+    problem, its just the ChangeOfBasis matrix needs to be
+    INVERTED in order to work as expected.
+
+Oct 27 2011
+  - I took out all the DWORD colors
+  - made all tex coords Vec4, because you usually want to attach
+    additional information to texcoords.
+
+Oct 29 2011
+  - Added vttttncccc general vertex format and shaders
+  - This is how IDs are handled:
+    - Each TRIANGLE gets a unique ID.
+    - The IDs are assigned __after__ all triangle creation
+      and tessellation has occurred.
+    - ID is tracked by RadCore class, NOT Triangle class
+    - an array vector<Triangle*> allTris is kept in 
+      RadCore
+      - This gives constant time lookup TRIANGLE by ID
+      - This also gives constant time VERTEX look up
+        via mesh.verts[ TRIANGLE->iA ], mesh.verts[ TRIANGLE->iB ], mesh.verts[ TRIANGLE->iC ]
+
+Nov 21 2011
+  - Took down repository
+  - been studying wavelets and doing sample project (external)
+    which is why no code changed here
+
+  - finally committed to VTTTTNCCCC instead of
+    PositionTextureTextureTextureTextureNormalColorColorColorColor
+    could also use PositionTexture4NormalColor4, but
+    that looks like I'm using 4-COMPONENT textures (xyzw) instead
+    of saying 4 texCOORDS.
+
+Dec 3 2011
+  - Got wavelets working (externally)
+  - Reworked shader code (renamed funcs and added FROM and TO)
+
+Dec 4 2011
+  - I made a mistake in creating constructors that
+    accept FILE* pointers.  The mistake is that
+    if you construct an object with an INTEGER
+    or NULL,
+
+      Vector v = 0 ;
+
+    it invokes the FILE* constructor.
+    This is NOT what I want, because the 0
+    vector is well-defined: (0,0,0).
+    The generic wavelet code needs to
+    construct a zero-element.
+
+    So I fixed that, and now there's
+    a member function load(FILE*f);
+    Vector(real v); and operator=(T v),
+    where T={int,real,ByteColor}
+
+Dec 5 2011
+  - Working on Monte Carlo renders
+
+Dec 7 2011
+  - Had a very painful bug where
+    the constructor that was meant
+    to capture 0 on vectors
+      Vector v = 0 ;
+      {v.x,v.y,v.z,v.w=0}
+    was capturing the ID assignment
+    to triangle ID colors,
+    so they were getting -16777216
+    for their values (instead of
+    0xff000001 converting to
+    rgba(1,0,0,255)/255.0).
+    So that was painful to hunt down
+    because I thought it was a D3D11
+    texture issue, where the geometry
+    wasn't rendering to texture properly.
+
+Dec 8 2011
+  - Got bit in the ass by a different
+    version OF THE SAME BUG as yesterday:
+      Material( const Vector& allColor )
+    got called by accident when I was
+    assigning an object's material
+    using
+      AllVertex vA( A, tri.normal, shape->material.kd ) ;
+    instead of
+      AllVertex vA( A, tri.normal, shape->material ) ;
+
+    so the AllVertex ctor accepts a Material object,
+    but 
+
+    So, the solution is
+
+      explicit Material( const Vector& allColor );
+
+    Does NOT allow implicit conversion of
+    Vector to Material.
+
+Dec 9 2011
+  - 0,      0,    f/(n-f),  n*f/(n-f), // long standing bug: this was transposed
+    0,      0,         -1,  0
+    
+    The last 2 rows WERE wrong, the -1 needed
+    to change places with n*f/(n-f) (which it
+    DID here - the above is CORRECT).
+
+Dec 10 2011
+  - Well yesterday NIGHT I fixed the radiosity bug:
+    FOR FLAT SURFACES:  MOST ACCURACY ACHIEVED BY LIFTING OFF 1e-12
+    IN DIRECTION OF OUTFRONT. Because surface is flat, this means
+    I WON'T CATCH MYSELF when rendering the rest of the scene, and
+    I won't catch the backs of my neighbours either (because I placed
+    the eye clearly in front of them).
+      - NO CULLING, eye + outFront*1e-12 worked perfectly for flat, LOTS of error for sphere.
+      - BACK FACE CULLING, eye + outFront*1e-6 worked with ONE PATCH ERROR, flat, but perfectly for sphere
+        so may be catching SELF with above config
+      - BACK FACE CULLING, eye + outFront*1e-12 worked perfectly for flat, one error on sphere
+      all above tests solved to 1e-5 norm^2 error. 
+        back face culling + 1e-9 worked perfectly for both curved surfaces and flat surfaces.
+    
+    For curved surfaces, THE FURTHER THE BETTER (1e-6 works perfectly)
+    You need to avoid catching the backs of your neighbours.
+    -- sinking into the surface doesn't work.
+
+  - So, officially, FIXED RADIOSITY RENDERER AND IT WORKS NOW.
+  - Reduced compile time by removing #include statements
+    and replacing with forward declarations
+
+Dec 11 2011
+  - Today and yesterday I was working on this idea
+    of real-time radiosity using summed/averaged normals
+    of contributing surfaces using form factors.
+    Only works for
+    Expanded vertex format to VT10NC10. texcoord0-texcoord9
+    and color0-color9.  This should allow me to add on
+    as much per-vertex data as I can possibly need..
+    or not.
+    - connect that additional per-vertex data CAN BE
+      STORED IN A TEXTURE, you just need a single texcoord
+      (u,v,z,w) to perform additional the lookup IN the texture.
+    - I must comment expanding the framework and adding
+      an additional texture format WAS PAIN FREE AND EASY
+      thanks to ENUMERATIONS, good naming, and an easy to expand
+      VertexT10.. format
+        (just as I'm writing this I'm getting a crash ;)
+
+Dec 12 2011
+  - Got interreflection radiosity working.
+
+Dec 13 2011
+  - Need to fix DIRECTION of interreflection.
+    Right now using negated, reflected on normal vector
+    to direction of incidence.
+    FOR ANGLE OF INCIDENCE, SHOULD USE ANGLE
+    OF VECTOR FOR HEMICUBE, NOT THE SURFACE NORMAL.
+    - OR IS USING ANGLE OF NORMAL working better for some reason?
+
+  - Cutting ISurface into 2 interfaces:
+    - IRenderTarget
+    - IColorBuffer
+    Although they are very similar underneath,
+    logically they are totally different and
+    have different sets of supported operations.
+      - bind() and unbind are for rendertargets only
+      - construction parameters are totally different
+        (colorbuffer doesn't need a viewport)
+
+  - Looking at the DirectCompute lectures,
+    a texture would be a bad choice in d3d11.
+    Using a cbuffer is much more suitable.
+  
+  - BUT: "A constant buffer is a specialized buffer resource
+          that is accessed like a buffer. Each constant buffer
+          can hold up to 4096 vectors; each vector contains up to
+          four 32-bit values. You can bind up to 14 constant buffers
+          per pipeline stage (2 additional slots are reserved for internal use)."
+          == 4096*4*4 = 65,536 BYTES MAX. which is pretty small.
+          On the 8192*8192= 268,435,456 bytes.
+
+Dec 14 2011
+  - Decided a mesh will not accept a vertex/pixel shader
+    a mesh can be draw by many different shaders.
+    assigning shaders to a Mesh doesn't really
+    make practical sense.
+  - textures can now bind themselves to the pipeline
+    (via ISurface::activate(int slot)).
+    this is actually a bit weird.. because the SHADER
+    must know what slot id the texture bound itself to.
+  
+  - ! You can't sample a texture in a vertex shader.
+    This is bad, because now I'm forced to use cbuffer,
+    which means
+
+Dec 17 2011
+  - I'm resolving some painful mismatches between area
+    lights and shape based lights.
+    - In radiosity, lights are SHAPES. They can't be functions,
+      they must be rasterizable shapes.
+    - In SH, lights are FUNCTIONS.
+      - One resolution is using the visualization of
+        Light* functions as light sources in radiosity
+        - This works but limits the shapes of light sources
+          we can use for radiosity to functions we can express
+          (ie so cubes would become complicated expressions)
+          - Can a Shape (Mesh) be represented in SH?
+            - Yes, by shooting a ray from the center of
+              the shape to the (theta,phi) to get an intersection point.
+
+  - So I did that:  I made shapes traceable.
+  - Again, where does diffuse/specular meet?
+    - Specular light sources are just __highly directional__.
+    - They are cone lights, and you need to 
+    - In a raytracer, you'd need to hit a very small emitter
+      very exactly ON A BOUNCE.
+      - Or in other words, from the raytracer, the specular
+        component will be added IF YOU RAY BOUNCE OFF MATERIAL,
+        AND HIT THE LIGHT SOURCE DIRECTLY.
+      - The SpecularLight class was devised expressly to
+        be able to RAYTRACE SPECULAR LIGHT SOURCES,
+        but in reality.. there is no such thing.
+        Every light source will show a specular reflection
+        ::getColor() is bad
+      - In fact the WHOLE specular/diffuse thing IS A HACK,
+        and you shouldn't have a distinction FOR LIGHTS in
+        a physically correct renderer - EVERY light source
+        must be considered as a SPECULAR AND DIFFUSE emitter,
+        the size of the specular highlight varies with the
+        surface area of the light source.
+      - In a raytracer, YOU SHOULD NOT BE DOING specular+diffuse lighting.
+        Its __not__ correct.  It's hard to let go of, but
+        it's not correct.
+      - You should also allow TEXTURING for emission patterns,
+        like emissive textures.
+
+  - You physically CANNOT have a zero surface area
+    light source that lights an entire scene. IT MUST
+    have a surface area.
+    - So you can now construct a light BASED ON A SHAPE
+      OR BASED ON A FUNCTION.
+    - Because I just provided operator()( real tEl, real pAz );
+      in class Shape, A SHAPE CAN NOW BE CONSIDERED A FUNCTION.
+      - It's not 100% accurate (actually it needs to return
+        THE FURTHEST point of intersection, not the closest)
+        but it gives the idea.
+  - Light::mgv now becomes the SHAPE of the light.  Cool.
+    Still want the SPHEREMAP visualization, now this is
+    the only fictional visualization now.
+
+Dec 19 2011
+  - Fixed a bug where the SPECULAR COORDINATES texture,
+    which was being assigned to each Mesh as I was writing
+    the specular colors/angles, was actually being rendered
+    when it was opened because there was a new call to
+
+      tex->activate()
+
+    in class Mesh.
+    What this meant was I was getting all black surfaces,
+    absolutely surprising.
+
+    I finally fixed everything so it works the way it did last week.
+
+Dec 29 2011
+  - Where was I?
+
+Dec 30 2011
+  - Finished interreflections stuff, result not as good as I wanted,
+    need way to approximate vector fields (normal, spec dirs, blocked light dirs
+    are vector fields)
+
+Jan 1 2011
+  - was miserably sick yesterday, wow.
+  - now working on raytracing.  Would like to have it work properly.
+
+Oct 11 2012
+  - Clean up pass.
+  - I'm fixing the row major issue with the matrices. Everything will now
+    be ROW MAJOR.  That means post-multiply will be illegal,
+    and concatenated matrices will go LEFT TO RIGHT in terms of
+    operation order.
+  - I will PRECOMPUTE triangles using gamedev method
+
+  //!!???? IS THIS RIGHT???
+
+Oct 15 2012
+  - 2x speed increase by fixing AABB intersect code,
+    and caching Triangle intersect barycentric coordinate
+    data
+
+Feb 2 2013
+  - I realized there is a bug with the enqueue timer,
+    timing starts when you enqueue a parallel batch, but 
+    it should start WHEN THE PARALLEL BATCH STARTS,
+    so I need to add an optional PREBATCH function to ParallelBatches.
+  - Cloning cubemap has yet another problem.
+  - It only appears in release mode.  In debug mode the bug disappeared.
+    Happened when cloning the cubemap mesh (new Mesh( meshes[i] ) )
+    - FIXED the bug.  It was due to mesh transfer, I forgot to reassign
+      owning mesh when meshgroup transfers from one shape to another
+      (was in Shape::takeMeshesFrom)
+
+Feb 3 2013
+  - One of the biggest mistakes in this codebase is
+    a Vector class that sometimes acts like a Vector3
+    and sometimes acts like a Vector4.
+    Even in the ctor, you're not sure (w gets 1 except
+    when you assign a double to the vector).
+    Sure it was convenient to only write 1 class,
+    but instances like operator* not sure whether it should
+    multiply the w component or not (and uncertainity in CALLING
+    the code and having to check) is really not worth it.
+
+May 25 2017
+  - Updated code to compile in VS 2017:
+    Replaced use of • with just the word "Dot",
+    replaced use of √ with just the word "sqrt"
+    error C3873 forbids use of these odd characters (•, ×, √)
+    as the FIRST CHARACTER of an identifier.
+    You can only use [A-Za-z_] as valid characters
+    for the first character of an identifier.
+    https://msdn.microsoft.com/en-us/library/565w213d.aspx
+    
+- Todo:
+programming
+  - add CYLINDERS and TORUSES as basic primitives.
+  - add COMPLETELY CORRECT raytracing,
+    cornell box scene
+    - you didn't allow rays to ENTER AREA LIGHT SOURCES
+      ALL SURFACES MUST BE CAPABLE OF BEING EMISSIVE
+    - MUST ADD AREA LIGHT SOURCES TO RT (multiple rays sent
+      back to light source, not just one.)
+  - there is a bug in raytracing an SH scene.
+  - the INTERFACE for adding Meshes to a MeshGroup needs
+    to be tightened up/reviewed
+  - you can use an INTERFACE for loadable/saveables, but
+    i don't think an interface can require a specific type of ctor.
+  - SHLIGHTING should be on a texcoord, not color
+  - normal transformation is not 100% correct
+  - there is an issue with w in the vector class
+  - SH class functionality/sampling can be MUCH more clearly
+    encapsulated
+  - cut spare bytes in file due to string NULs, add parity checks
+  
+
+  - can you flashlight a scene in SH? (NO)
+
+  - WHAT did Ng do?
+    - Render a cubemap at each vertex?
+    - "Compress" the cubemap into wavelet basis?
+      - "multiply" them, then UNCOMPRESS the
+        cubemap... TO GET LIGHTING AT THE VERTEX??
+    - SH favors NOT using index buffers
+      (because lighting per-vertex means sharp shadows at
+       corners impossible)
+    - 
+  - CAN SPHERICAL WAVELETS REPRESENT 3D FUNCTIONS?  
+    Or do they STILL operate on the cubemaps?
+features
+  - perlin marble.
+  - add quaternions
+  - wavelet
+  - don't know how to do brdf,
+  - don't know how to do subsurface
+
+SYMBOLS:
+▀▀▀▀▀▀▀
+000000000111111111122222222223333333333
+123456789012345678901234567890123456789
+☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !"#$%&'
+
+4444444444555555555566666666667777777777
+0123456789012345678901234567890123456789
+()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNO
+
+0000000000000000000011111111111111111111
+8888888888999999999900000000001111111111
+0123456789012345678901234567890123456789
+PQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvw
+
+1111111111111111111111111111111111111111
+2222222222333333333344444444445555555555
+0123456789012345678901234567890123456789
+xyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒ
+
+1111111111111111111111111111111111111111
+6666666666777777777788888888889999999999
+0123456789012345678901234567890123456789
+áíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟
+
+2222222222222222222222222222222222222222
+0000000000111111111122222222223333333333
+0123456789012345678901234567890123456789
+╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩
+
+2222222222222222222222222222222222222222
+4444444444455555
+0123456789012345
+≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ 
+
+0000000
+2211111
+1177889
+5689890
+×Ø²³¼½¾
+
+

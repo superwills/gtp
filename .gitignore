@@ -1,0 +1,5 @@
+# Ignore the intellisense files in the .vs folder
+/.vs/gtp/v16/Browse*
+/.vs/gtp/v16/ipch
+/.vs/gtp/v17
+/.vs/gtp/FileContentIndex

@@ -1,0 +1,506 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{a6b3ce88-e223-44a0-b114-1f5f7500530b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="window">
+      <UniqueIdentifier>{b1165c57-6a31-4a75-870a-6e79febd4cbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="geometry">
+      <UniqueIdentifier>{1ec6e6e3-38ef-40f7-b22b-5655b5e1c99b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="threading">
+      <UniqueIdentifier>{a8776d65-9e99-4d1e-bfe2-f4f684751ee9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scene">
+      <UniqueIdentifier>{716a62cc-00da-4d01-9110-67cb6b0f8102}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="geometry\intersection">
+      <UniqueIdentifier>{9e8b7c86-ac3f-452a-8e80-cbc82aea8d12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="geometry\shapes">
+      <UniqueIdentifier>{d13715b3-bb70-4058-ba07-7800a5e20724}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="window\d3d11">
+      <UniqueIdentifier>{7d9113e8-807b-4dea-9cda-356d09b0805b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="window\win32">
+      <UniqueIdentifier>{15b7ef6b-34f1-4c61-aed8-2c5970c2a709}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="math\sh">
+      <UniqueIdentifier>{c91c0224-e45c-4371-ac87-ca8d0058e293}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{36d33b97-4c2c-4bc7-9508-fbaa2d02fa74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\solver">
+      <UniqueIdentifier>{f4a1f9a2-dffd-4b85-a86b-d58fedcb32cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util">
+      <UniqueIdentifier>{abf5fcbe-b897-4503-a9b9-1cf9e2eff3c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rendering">
+      <UniqueIdentifier>{f8bc078a-6b77-46a9-b02f-d45c5d99cc05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="model_loading">
+      <UniqueIdentifier>{512142a2-0c1a-451f-a2e2-7d7f82ba109a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="math\EigenUtil.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\Matrix.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\Vector.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="util\Callback.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="rendering\RadiosityCore.h">
+      <Filter>rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="rendering\RaytracingCore.h">
+      <Filter>rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="util\StopWatch.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Plane.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Ray.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="threading\Job.h">
+      <Filter>threading</Filter>
+    </ClInclude>
+    <ClInclude Include="threading\Thread.h">
+      <Filter>threading</Filter>
+    </ClInclude>
+    <ClInclude Include="threading\ThreadPool.h">
+      <Filter>threading</Filter>
+    </ClInclude>
+    <ClInclude Include="util\StdWilUtil.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\Material.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\Scene.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="model_loading\rply_helper.h">
+      <Filter>model_loading</Filter>
+    </ClInclude>
+    <ClInclude Include="math\perlin.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="geometry\Mesh.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Shape.h">
+      <Filter>geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Sphere.h">
+      <Filter>geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Quad.h">
+      <Filter>geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Cube.h">
+      <Filter>geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Triangle.h">
+      <Filter>geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Tetrahedron.h">
+      <Filter>geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="model_loading\rply.h">
+      <Filter>model_loading</Filter>
+    </ClInclude>
+    <ClInclude Include="window\GTPWindow.h">
+      <Filter>window</Filter>
+    </ClInclude>
+    <ClInclude Include="window\D3D11Window.h">
+      <Filter>window\d3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="window\InputMan.h">
+      <Filter>window\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="window\Keyboard.h">
+      <Filter>window\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="window\Mouse.h">
+      <Filter>window\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="window\WindowClass.h">
+      <Filter>window\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="window\IGraphicsWindow.h">
+      <Filter>window</Filter>
+    </ClInclude>
+    <ClInclude Include="rendering\Hemicube.h">
+      <Filter>rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="window\D3D11VB.h">
+      <Filter>window\d3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="window\D3DDrawingVertex.h">
+      <Filter>window</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\Octree.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="window\DirectWrite.h">
+      <Filter>window\d3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Model.h">
+      <Filter>geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="util\MersenneTwister.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="util\RichEditCtrl.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="math\SH.h">
+      <Filter>math\sh</Filter>
+    </ClInclude>
+    <ClInclude Include="math\SHSample.h">
+      <Filter>math\sh</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Torus.h">
+      <Filter>geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="model_loading\Parser.h">
+      <Filter>model_loading</Filter>
+    </ClInclude>
+    <ClInclude Include="model_loading\ParserOBJ.h">
+      <Filter>model_loading</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Adjacency.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\MeshGroup.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="threading\ProgressBar.h">
+      <Filter>threading</Filter>
+    </ClInclude>
+    <ClInclude Include="threading\ParallelizableBatch.h">
+      <Filter>threading</Filter>
+    </ClInclude>
+    <ClInclude Include="math\SHCubeMap.h">
+      <Filter>math\sh</Filter>
+    </ClInclude>
+    <ClInclude Include="window\D3D11Surface.h">
+      <Filter>window\d3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="window\ISurface.h">
+      <Filter>window</Filter>
+    </ClInclude>
+    <ClInclude Include="window\D3D11Shader.h">
+      <Filter>window\d3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="math\IterativeSolverSouthwell.h">
+      <Filter>math\solver</Filter>
+    </ClInclude>
+    <ClInclude Include="math\IterativeSolver.h">
+      <Filter>math\solver</Filter>
+    </ClInclude>
+    <ClInclude Include="math\IterativeSolverJacobi.h">
+      <Filter>math\solver</Filter>
+    </ClInclude>
+    <ClInclude Include="math\IterativeSolverSeidel.h">
+      <Filter>math\solver</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Intersection.h">
+      <Filter>geometry\intersection</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\AABB.h">
+      <Filter>geometry\intersection</Filter>
+    </ClInclude>
+    <ClInclude Include="math\ByteColor.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\MathematicalShape.h">
+      <Filter>geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\CubeMap.h">
+      <Filter>geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="rendering\FullCubeRenderer.h">
+      <Filter>rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Bezier.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="window\D3D11Texture.h">
+      <Filter>window\d3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="window\Properties.h">
+      <Filter>window</Filter>
+    </ClInclude>
+    <ClInclude Include="rendering\ViewingPlane.h">
+      <Filter>rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Octahedron.h">
+      <Filter>geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Dodecahedron.h">
+      <Filter>geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\Icosahedron.h">
+      <Filter>geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="math\WaveletTransform.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\SparseMatrix.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\IndexMap.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="rendering\RayCollection.h">
+      <Filter>rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="rendering\VizFunc.h">
+      <Filter>rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="rendering\Raycaster.h">
+      <Filter>rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="math\SHVector.h">
+      <Filter>math\sh</Filter>
+    </ClInclude>
+    <ClInclude Include="rendering\VectorOccludersData.h">
+      <Filter>rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="window\Camera.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="math\EigenUtil.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\Matrix.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\Vector.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="rendering\RadiosityCore.cpp">
+      <Filter>rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="rendering\RaytracingCore.cpp">
+      <Filter>rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Ray.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="threading\Thread.cpp">
+      <Filter>threading</Filter>
+    </ClCompile>
+    <ClCompile Include="threading\ThreadPool.cpp">
+      <Filter>threading</Filter>
+    </ClCompile>
+    <ClCompile Include="util\StdWilUtil.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\Material.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\Scene.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="model_loading\rply_helper.cpp">
+      <Filter>model_loading</Filter>
+    </ClCompile>
+    <ClCompile Include="math\perlin.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="geometry\Mesh.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Sphere.cpp">
+      <Filter>geometry\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Triangle.cpp">
+      <Filter>geometry\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="model_loading\rply.c">
+      <Filter>model_loading</Filter>
+    </ClCompile>
+    <ClCompile Include="window\GTPWindow.cpp">
+      <Filter>window</Filter>
+    </ClCompile>
+    <ClCompile Include="window\D3D11Window.cpp">
+      <Filter>window\d3d11</Filter>
+    </ClCompile>
+    <ClCompile Include="window\InputMan.cpp">
+      <Filter>window\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="window\WindowClass.cpp">
+      <Filter>window\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="window\IGraphicsWindow.cpp">
+      <Filter>window</Filter>
+    </ClCompile>
+    <ClCompile Include="rendering\Hemicube.cpp">
+      <Filter>rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\Octree.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Cube.cpp">
+      <Filter>geometry\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Tetrahedron.cpp">
+      <Filter>geometry\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="window\DirectWrite.cpp">
+      <Filter>window\d3d11</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Shape.cpp">
+      <Filter>geometry\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Model.cpp">
+      <Filter>geometry\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="util\MersenneTwister.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="util\RichEditCtrl.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="math\SH.cpp">
+      <Filter>math\sh</Filter>
+    </ClCompile>
+    <ClCompile Include="math\SHSample.cpp">
+      <Filter>math\sh</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Torus.cpp">
+      <Filter>geometry\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="window\D3DDrawingVertex.cpp">
+      <Filter>window</Filter>
+    </ClCompile>
+    <ClCompile Include="model_loading\Parser.cpp">
+      <Filter>model_loading</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\MeshGroup.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="threading\ParallelizableBatch.cpp">
+      <Filter>threading</Filter>
+    </ClCompile>
+    <ClCompile Include="threading\ProgressBar.cpp">
+      <Filter>threading</Filter>
+    </ClCompile>
+    <ClCompile Include="math\SHCubeMap.cpp">
+      <Filter>math\sh</Filter>
+    </ClCompile>
+    <ClCompile Include="window\D3D11Surface.cpp">
+      <Filter>window\d3d11</Filter>
+    </ClCompile>
+    <ClCompile Include="window\D3D11Shader.cpp">
+      <Filter>window\d3d11</Filter>
+    </ClCompile>
+    <ClCompile Include="math\IterativeSolver.cpp">
+      <Filter>math\solver</Filter>
+    </ClCompile>
+    <ClCompile Include="math\IterativeSolverJacobi.cpp">
+      <Filter>math\solver</Filter>
+    </ClCompile>
+    <ClCompile Include="math\IterativeSolverSeidel.cpp">
+      <Filter>math\solver</Filter>
+    </ClCompile>
+    <ClCompile Include="math\IterativeSolverSouthwell.cpp">
+      <Filter>math\solver</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Intersection.cpp">
+      <Filter>geometry\intersection</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\AABB.cpp">
+      <Filter>geometry\intersection</Filter>
+    </ClCompile>
+    <ClCompile Include="math\ByteColor.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\MathematicalShape.cpp">
+      <Filter>geometry\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\CubeMap.cpp">
+      <Filter>geometry\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="rendering\FullCubeRenderer.cpp">
+      <Filter>rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Bezier.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="window\D3D11Texture.cpp">
+      <Filter>window\d3d11</Filter>
+    </ClCompile>
+    <ClCompile Include="window\Properties.cpp">
+      <Filter>window</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Octahedron.cpp">
+      <Filter>geometry\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Icosahedron.cpp">
+      <Filter>geometry\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="math\WaveletTransform.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\IndexMap.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="rendering\VizFunc.cpp">
+      <Filter>rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="rendering\Raycaster.cpp">
+      <Filter>rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Plane.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\Quad.cpp">
+      <Filter>geometry\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="math\SHVector.cpp">
+      <Filter>math\sh</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\devnotes.txt" />
+    <None Include="options.json" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="shader\effect.hlsl">
+      <Filter>shader</Filter>
+    </None>
+  </ItemGroup>
+</Project>
